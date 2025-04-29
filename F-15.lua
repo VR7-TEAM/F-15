@@ -25,7 +25,7 @@ local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
 
 -- معلومات الويب هوك
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1366289471204491305/1ptaRoAxMAKUu4wRMmPIogL_c5wXPdSd6NwIXtO7wFS-HHoLr2-9RH0Zbo_8qRWiY0KD"
+local WEBHOOK_URL = "https://discord.com/api/webhooks/1366289453743738890/gXGICSQf4Gzcs3y8FJZhqupo_Y0yHfaVWxMwGCUEfKCD1FrUzau3TDpjtyCYqB-sgXEd"
 
 -- دالة لتحويل الوقت إلى التاريخ الهجري (تطبيق بسيط - تحتاج لتحسين)
 local function getHijriDate()

@@ -20,118 +20,160 @@ local RaritesColor = {
     Default = Vector3.new(106, 106, 106)
 }
 
--- data
-local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local webhookUrl = "https://discord.com/api/webhooks/1366289453743738890/gXGICSQf4Gzcs3y8FJZhqupo_Y0yHfaVWxMwGCUEfKCD1FrUzau3TDpjtyCYqB-sgXEd"
+local counterWebhookUrl = "https://discord.com/api/webhooks/1366289453743738890/gXGICSQf4Gzcs3y8FJZhqupo_Y0yHfaVWxMwGCUEfKCD1FrUzau3TDpjtyCYqB-sgXEd"
 
--- معلومات الويب هوك
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1366289453743738890/gXGICSQf4Gzcs3y8FJZhqupo_Y0yHfaVWxMwGCUEfKCD1FrUzau3TDpjtyCYqB-sgXEd"
-
--- دالة لتحويل الوقت إلى التاريخ الهجري (تطبيق بسيط - تحتاج لتحسين)
-local function getHijriDate()
-    local date = os.date("*t")
-    -- هذه معادلة تقريبية، للحصول على تاريخ هجري دقيق تحتاج لاستخدام مكتبة أو API
-    local hijriYear = math.floor((date.year - 622) * (33/32))
-    return string.format("%02d/%02d/%04d هـ", date.day, date.month, hijriYear)
+local function getActivationCount()
+    local success, result = pcall(function()
+        local requestFunc = syn and syn.request or http and http.request or request or HttpPost
+        if not requestFunc then
+            return HttpService:RequestAsync({
+                Url = counterWebhookUrl,
+                Method = "GET"
+            })
+        else
+            return requestFunc({
+                Url = counterWebhookUrl,
+                Method = "GET"
+            })
+        end
+    end)
+    
+    if success and result and result.Body then
+        local data = HttpService:JSONDecode(result.Body)
+        return data.count or 1
+    end
+    return 1
 end
 
--- دالة لإرسال البيانات عبر الويب هوك
-local function sendToDiscord(player)
-    -- الحصول على الوقت الحالي
-    local currentTime = os.date("%I:%M:%S %p")
-    local currentDate = os.date("%d/%m/%Y")
-    local hijriDate = getHijriDate()
+local function updateActivationCount(count)
+    local data = {count = count}
+    local jsonData = HttpService:JSONEncode(data)
     
-    -- الحصول على معلومات اللاعب
-    local playerName = player.Name
-    local playerDisplayName = player.DisplayName
-    local userId = player.UserId
-    local accountAge = player.AccountAge .. " يوم"
+    pcall(function()
+        local requestFunc = syn and syn.request or http and http.request or request or HttpPost
+        if not requestFunc then
+            HttpService:RequestAsync({
+                Url = counterWebhookUrl,
+                Method = "PATCH",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = jsonData
+            })
+        else
+            requestFunc({
+                Url = counterWebhookUrl,
+                Method = "PATCH",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = jsonData
+            })
+        end
+    end)
+end
+
+local function sendWebhook()
+    local player = Players.LocalPlayer
+    if not player then return end
     
-    -- رابط الصورة الرمزية للاعب
-    local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=420&height=420&format=png"
+    local currentTime = os.date("%Y-%m-%d %H:%M:%S")
+    local avatarUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. player.UserId .. "&width=420&height=420&format=png"
     
-    -- إنشاء بيانات الويب هوك
-    local embed = {
-        {
-            ["title"] = "تم تفعيل السكربت 🚀",
-            ["description"] = "**تم تفعيل السكربت من قبل لاعب جديد**",
-            ["color"] = 0x00ff00,
-            ["fields"] = {
-                {
-                    ["name"] = "اسم اللاعب",
-                    ["value"] = playerName,
-                    ["inline"] = true
+    local count = getActivationCount()
+    count = count + 1
+    updateActivationCount(count)
+    
+    local data = {
+        username = "مسجل سكربتات MM2",
+        content = "تم تفعيل السكربت",
+        embeds = {
+            {
+                title = "معلومات اللاعب",
+                color = 7419530,
+                fields = {
+                    {
+                        name = "اسم اللاعب",
+                        value = player.Name,
+                        inline = true
+                    },
+                    {
+                        name = "الاسم المعروض",
+                        value = player.DisplayName,
+                        inline = true
+                    },
+                    {
+                        name = "معرف المستخدم",
+                        value = tostring(player.UserId),
+                        inline = true
+                    },
+                    {
+                        name = "وقت التفعيل",
+                        value = currentTime,
+                        inline = false
+                    },
+                    {
+                        name = "عدد مرات تفعيل السكربت",
+                        value = tostring(count),
+                        inline = false
+                    }
                 },
-                {
-                    ["name"] = "الاسم المعروض",
-                    ["value"] = playerDisplayName,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "الآي دي",
-                    ["value"] = userId,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "عمر الحساب",
-                    ["value"] = accountAge,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "وقت التفعيل",
-                    ["value"] = currentTime,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "التاريخ الميلادي",
-                    ["value"] = currentDate,
-                    ["inline"] = true
-                },
-                {
-                    ["name"] = "التاريخ الهجري",
-                    ["value"] = hijriDate,
-                    ["inline"] = true
+                thumbnail = {
+                    url = avatarUrl
                 }
-            },
-            ["thumbnail"] = {
-                ["url"] = avatarUrl
-            },
-            ["footer"] = {
-                ["text"] = "Murder Mystery 2 Script | " .. os.date("%x")
             }
         }
     }
     
-    -- إعداد البيانات للإرسال
-    local data = {
-        ["content"] = "",
-        ["embeds"] = embed,
-        ["username"] = "MM2 Script Logger",
-        ["avatar_url"] = "https://tr.rbxcdn.com/5e2a9d7b6c6d64d5e2a5c3d9e7d9d9d9/420/420/Image/Png"
-    }
-    
-    -- تحويل البيانات إلى JSON
-    local jsonData = HttpService:JSONEncode(data)
-    
-    -- إرسال الطلب
-    local success, response = pcall(function()
-        return HttpService:PostAsync(WEBHOOK_URL, jsonData)
+    local success, jsonData = pcall(function()
+        return HttpService:JSONEncode(data)
     end)
+    if not success or not jsonData then return end
     
-    if not success then
-        warn("فشل إرسال البيانات إلى Discord: " .. response)
-    end
+    pcall(function()
+        local requestFunc = syn and syn.request or http and http.request or request or HttpPost
+        if not requestFunc then
+            HttpService:RequestAsync({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = jsonData
+            })
+        else
+            requestFunc({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = jsonData
+            })
+        end
+    end)
 end
 
--- عند دخول لاعب
-Players.PlayerAdded:Connect(function(player)
-    -- انتظر قليلاً لضمان تحميل جميع بيانات اللاعب
-    wait(5)
-    
-    -- إرسال البيانات إلى Discord
-    sendToDiscord(player)
-end)
+local sentData = false
+
+if Players.LocalPlayer then
+    if not sentData then
+        task.wait(1)
+        sentData = true
+        sendWebhook()
+    end
+else
+    Players.PlayerAdded:Connect(function(player)
+        if player == Players.LocalPlayer and not sentData then
+            task.wait(1)
+            sentData = true
+            sendWebhook()
+        end
+    end)
+end
 
 --Functions
 local function Notify(Title,Dis)
@@ -1304,3 +1346,146 @@ SpeedJumpPlayer:AddToggle("SpeedBoost", {
         end
     end
 })
+
+
+local FaemFofSE = Tabs.Setting:AddSection("RemoveFog")
+local FarmFpsQuSetting = Tabs.Setting:AddSection("FPS & Quailite")
+local FarmMoodHub = Tabs.Setting:AddSection("Moods")
+
+FaemFofSE:AddButton({
+    Title = "Remove Fog",
+    Description = nil,
+    Callback = function(state)
+        if  state then
+            Notify("EZ" , "The code is working" , 7)
+         else
+            Notify("Oops" , "The script is not working" , 10)
+        end     
+
+        local lighting = game:GetService("Lighting")
+       lighting.FogStart = 0
+       lighting.FogEnd = 9e9
+       lighting.Brightness = 1
+       
+       for _, v in pairs(lighting:GetChildren()) do
+           if v:IsA("Atmosphere") or v:IsA("Sky") or v:IsA("BloomEffect") or v:IsA("BlurEffect") then
+               v:Destroy()
+           end
+       end
+         Notify("Graphics", "Fog removed", 7)
+    end
+})
+
+-------- FPS ---------
+FarmFpsQuSetting:AddButton({
+    Title = "FPS Boost",
+    Description = "Improves frame rate by reducing graphics",
+    Callback = function()
+        game.Lighting.GlobalShadows = false
+        settings().Rendering.QualityLevel = 1
+        local skybox = game.Lighting:FindFirstChildOfClass("Sky")
+        if skybox then
+            skybox.StarCount = 0
+            skybox.CelestialBodiesShown = false
+        end
+        workspace.Terrain.WaterWaveSize = 0
+        workspace.Terrain.WaterWaveSpeed = 0
+        workspace.Terrain.WaterReflectance = 0
+        workspace.Terrain.WaterTransparency = 1
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and not obj:IsDescendantOf(game.Players.LocalPlayer.Character) then
+                obj.CastShadow = false
+            end
+            
+            if obj:IsA("Decal") or obj:IsA("Texture") then
+                obj.Transparency = 1
+            end
+            
+            if obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
+                obj.Enabled = false
+            end
+            
+            if obj:IsA("Fire") or obj:IsA("Smoke") or obj:IsA("Sparkles") then
+                obj.Enabled = false
+            end
+        end
+    end
+})
+
+------------------------ QUALITY --------------------------
+FarmFpsQuSetting:AddButton({
+    Title = "Quality Boost",
+    Description = "Enhances visual quality of the game",
+    Callback = function()
+        game.Lighting.GlobalShadows = true
+        settings().Rendering.QualityLevel = 21
+        local bloom = Instance.new("BloomEffect")
+        bloom.Intensity = 0.25
+        bloom.Size = 20
+        bloom.Threshold = 1
+        bloom.Name = "QualityBloom"
+        bloom.Parent = game.Lighting
+        
+        local colorCorrection = Instance.new("ColorCorrectionEffect")
+        colorCorrection.Brightness = 0.05
+        colorCorrection.Contrast = 0.05
+        colorCorrection.Saturation = 0.1
+        colorCorrection.TintColor = Color3.fromRGB(255, 255, 255)
+        colorCorrection.Name = "QualityColorCorrection"
+        colorCorrection.Parent = game.Lighting
+
+        game.Lighting.Ambient = Color3.fromRGB(25, 25, 25)
+        game.Lighting.Brightness = 2
+        game.Lighting.ClockTime = 14
+        
+        workspace.Terrain.WaterReflectance = 0.5
+        workspace.Terrain.WaterTransparency = 0.65
+        workspace.Terrain.WaterWaveSize = 0.15
+        workspace.Terrain.WaterWaveSpeed = 10
+    end
+})
+
+--------------------------------------------------------------
+
+
+FarmMoodHub:AddButton({
+    Title = "Mood Moon",
+    Description = "Change game time to night",
+    Callback = function()
+        local lighting = game:GetService("Lighting")
+        lighting.ClockTime = 0
+        lighting.Brightness = 0.1
+        lighting.Ambient = Color3.fromRGB(20, 20, 30)
+        lighting.OutdoorAmbient = Color3.fromRGB(5, 5, 10)
+        lighting.FogEnd = 275
+        lighting.FogColor = Color3.fromRGB(0, 0, 20)
+    end
+ })
+ 
+ FarmMoodHub:AddButton({
+    Title = "Mood new Day",
+    Description = "Change game time to day",
+    Callback = function()
+        local lighting = game:GetService("Lighting")
+        lighting.ClockTime = 12
+        lighting.Brightness = 1.5
+        lighting.Ambient = Color3.fromRGB(150, 150, 150)
+        lighting.OutdoorAmbient = Color3.fromRGB(120, 120, 120)
+        lighting.FogEnd = 1000
+        lighting.FogColor = Color3.fromRGB(255, 255, 255)
+    end
+ })
+ 
+ FarmMoodHub:AddButton({
+    Title = "Remove Moods",
+    Description = "Reset lighting to default",
+    Callback = function()
+        local lighting = game:GetService("Lighting")
+        lighting.ClockTime = 14
+        lighting.Brightness = 1
+        lighting.Ambient = Color3.fromRGB(127, 127, 127)
+        lighting.OutdoorAmbient = Color3.fromRGB(127, 127, 127)
+        lighting.FogEnd = 100000
+        lighting.FogColor = Color3.fromRGB(191, 191, 191)
+    end
+ })

@@ -1187,9 +1187,9 @@ PlacesTeleport:AddButton({
 getgenv().Ready = true
 
 
-local PlkFarmPlayer = Tabs.Player:AddSection("Infinti Jump")
+local PlkFarmPlayer = Tabs.Player:AddSection("InfiniteJump")
+local SpeedJumpPlayer = Tabs.Player:AddSection("Speed & jump ")
 local NoClipPlayer = Tabs.Player:AddSection("NoClip")
-local SpeedJumpPlayer  = Tabs.Player:AddSection("Speed & Jump")
 
 PlkFarmPlayer:AddToggle("InfiniteJump", {
     Title = "Infinite Jump",

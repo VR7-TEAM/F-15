@@ -445,6 +445,7 @@ local Tabs = {
     Visuals = Window:AddTab({ Title = "Visuals", Icon = "eye" }),
     Teleport = Window:AddTab({ Title = "Teleport", Icon = "http://www.roblox.com/asset/?id=6034767608"}),
     Player = Window:AddTab({ Title = "Player", Icon = "user" }),
+    Setting = Window:AddTab({ Title = "Setting", Icon = "settings" }),
 }
 local Options = Fluent.Options
 Window:SelectTab(1)
@@ -1187,7 +1188,8 @@ getgenv().Ready = true
 
 
 local PlkFarmPlayer = Tabs.Player:AddSection("Infinti Jump")
-
+local NoClipPlayer = Tabs.PLayer:AddSection("NoClip")
+local SpeedJumpPlayer  = Tabs.Player:AddSection("Speed & Jump")
 
 PlkFarmPlayer:AddToggle("InfiniteJump", {
     Title = "Infinite Jump",
@@ -1211,3 +1213,94 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
         end
     end
 end)
+
+NoClipPlayer:AddToggle("Noclip", {
+    Title = "Noclip",
+    Description = "Walk through walls and obstacles",
+    Default = false,
+    Callback = function(state)
+        _G.Noclip = state
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        
+        local noclipConnection
+        if state then
+            noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                if not _G.Noclip then 
+                    if noclipConnection then
+                        noclipConnection:Disconnect()
+                    end
+                    return
+                end
+                
+                if character and character:FindFirstChild("Humanoid") then
+                    for _, part in pairs(character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+        else
+            if noclipConnection then
+                noclipConnection:Disconnect()
+            end
+            
+            if character then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                        part.CanCollide = true
+                    end
+                end
+            end
+        end
+        player.CharacterAdded:Connect(function(newCharacter)
+            character = newCharacter
+            wait(1)
+            if _G.Noclip then
+                noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                    if not _G.Noclip then 
+                        if noclipConnection then
+                            noclipConnection:Disconnect()
+                        end
+                        return
+                    end
+                    
+                    if character and character:FindFirstChild("Humanoid") then
+                        for _, part in pairs(character:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+})
+
+SpeedJumpPlayer:AddToggle("HighJump", {
+    Title = "HighJump",
+    Description = "Enables higher jumping ability",
+    Default = false,
+    Callback = function(state)
+        if state then
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = 75
+        else
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
+        end
+    end
+})
+
+SpeedJumpPlayer:AddToggle("SpeedBoost", {
+    Title = "SpeedBoost",
+    Description = "Increases movement speed",
+    Default = false,
+    Callback = function(state)
+        if state then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 30
+        else
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end
+    end
+})

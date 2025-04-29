@@ -1188,7 +1188,7 @@ getgenv().Ready = true
 
 
 local PlkFarmPlayer = Tabs.Player:AddSection("Infinti Jump")
-local NoClipPlayer = Tabs.PLayer:AddSection("NoClip")
+local NoClipPlayer = Tabs.Player:AddSection("NoClip")
 local SpeedJumpPlayer  = Tabs.Player:AddSection("Speed & Jump")
 
 PlkFarmPlayer:AddToggle("InfiniteJump", {

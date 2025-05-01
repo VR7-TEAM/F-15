@@ -90,37 +90,6 @@ local AutoMony = Tabs.Maim:AddSection("AutoMoney")
 local PlayerNameTargetting = Tabs.Targeting:AddSection("Target")
 local OptionsTargetting = Tabs.Targeting:AddSection("Options")
 
-local TargetInput = PlayerNameTargetting:AddInput("Input", {
-    Title = "Player Name",
-    Description = nil,
-    Default = nil,
-    Placeholder = "Name Here",
-    Numeric = false,
-    Finished = true,
-    Callback = function(Value)
-		if getgenv().Ready then 
-			local TargetName = GetPlayer(Value)
-			if TargetName then
-				Notify("Successed","The Player @"..TargetName.Name.." has been chosen!")
-				getgenv().TargetUserName = TargetName.Name
-			else
-				Notify("Error","Unknown Player")
-				getgenv().TargetUserName = nil
-			end
-		end
-    end
-})
-
-game.Players.PlayerRemoving:Connect(function(Player)
-	pcall(function()
-		if Player.Name == getgenv().TargetUserName then
-			getgenv().TargetUserName = nil
-            Options.FlingTargetToggle:SetValue(false)
-			Notify("Error","Target left or rejoined")
-		end
-	end)
-end)
-
 PlayerNameTargetting:AddButton({
     Title = "Choose Player Tool",
     Description = "Click on a player to select him",

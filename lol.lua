@@ -87,8 +87,8 @@ local AutoMony = Tabs.Maim:AddSection("AutoMoney")
 -- code
 
 
-local PlayerNameTargetting = Tabs.Targetting:AddSection("Target")
-local OptionsTargetting = Tabs.Targetting:AddSection("Options")
+local PlayerNameTargetting = Tabs.Targeting:AddSection("Target")
+local OptionsTargetting = Tabs.Targeting:AddSection("Options")
 
 local TargetInput = PlayerNameTargetting:AddInput("Input", {
     Title = "Player Name",

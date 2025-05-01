@@ -1452,7 +1452,7 @@ local plr = game.Players.LocalPlayer
 
 Animation:AddButton({
     Title = "HeroAnim",
-    Description = "Very important button",
+    Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
         Notify("System Front","يجب ان تكون R15")
@@ -1474,7 +1474,7 @@ Animation:AddButton({
 
 Animation:AddButton({
     Title = "ZombieClassicAnim_",
-    Description = "Very important button",
+    Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
         Notify("System Front","يجب ان تكون R15")
@@ -1488,6 +1488,113 @@ Animation:AddButton({
 	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
 	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
 	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
+    plr.Character.Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
+
+Animation:AddButton({
+    Title = "LevitationAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15")
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616006778"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616008087"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616013216"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616010382"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616008936"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616003713"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616005863"
+    plr.Character.Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
+
+
+Animation:AddButton({
+    Title = "NinjaAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15")
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
+    plr.Character.Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
+
+Animation:AddButton({
+    Title = "PirateAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15")
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
+    plr.Character.Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
+
+
+Animation:AddButton({
+    Title = "ToyAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15")
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
+    plr.Character.Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
+
+Animation:AddButton({
+    Title = "PrincessAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15")
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=941003647"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=941013098"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=941028902"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=941015281"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=941008832"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=940996062"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=941000007"
     plr.Character.Humanoid:ChangeState(3) 
     Animate.Disabled = false
     end

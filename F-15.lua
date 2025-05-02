@@ -1328,10 +1328,9 @@ FarmFpsQuSetting:AddButton({
 
 -----------------------------------------------------------------------------------------------------
 local Animation = Tabs.Scin:AddSection("Animation 1")
-local Animation2 = Tabs.Scain:AddSection("Animation 2")
-local Animation3 = Tabs.Scain.AddSection("Animation 3")
-local DanceScript = Tabs.Scain.AddSection("ScriptDance")
-
+local Animation2 = Tabs.Scin:AddSection("Animation 2")
+local Animation3 = Tabs.Scin:AddSection("Animation 3")
+local DanceScript = Tabs.Scin:AddSection("Dance Script")
 local plr = game.Players.LocalPlayer
 
 Animation:AddButton({
@@ -1528,12 +1527,12 @@ Animation3:AddButton({
     Animate.Disabled = false
     end
 })
+    
 
-
-Animation3:AddButton({
-    Title = "ScriptDance",
+DanceScript:AddButton({
+    Title = "PatrolAnim",
     Description = nil,
-    Callback = function(state)
+    Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Hm5011/hussain/refs/heads/main/Free%20Dances"))()
         if state then
             Notify("Systym Front" , "Ez , the script is working",10)
@@ -1542,8 +1541,6 @@ Animation3:AddButton({
         end
     end
 })
-
-
 
 ------------------------------------------------------------------------MAX SCRIPT------------------------------------------------------------------------------------------------------------------------------------------------------------------
 spawn(function()

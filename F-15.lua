@@ -1419,7 +1419,7 @@ Animation2:AddButton({
     end
 })
 
-AniAnimation2:AddButton({
+Animation2:AddButton({
     Title = "PirateAnim",
     Description = nil,
     Callback = function()

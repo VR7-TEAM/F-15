@@ -1810,6 +1810,26 @@ AnimationGirl:AddButton({
     end
 })
 
+AnimationGirl:AddButton({
+    Title = "BubblyAnim",
+    Description = nil,
+    Callback = function()
+    if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
+        Notify("System Front","يجب ان تكون R15" , 9)
+        return
+    end
+    local Animate = plr.Character.Animate
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=910004836"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=891633237"
+	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=910034870"
+	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=910025107"
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=910016857"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=909997997"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=910001910"
+    plr.Character  .Humanoid:ChangeState(3) 
+    Animate.Disabled = false
+    end
+})
 
 DanceScript:AddButton({
     Title = "Script Dance ()",

@@ -1790,7 +1790,7 @@ GoodAnimation:AddButton({
 })
 
 AnimationGirl:AddButton({
-    Title = "StylishAnim",
+    Title = "Stylish Anim",
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
@@ -1798,14 +1798,14 @@ AnimationGirl:AddButton({
         return
     end
     local Animate = plr.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=2510197257"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=2510196951"
+	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616136790"
+	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616138447"
 	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616146177"
 	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616140816"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=2510197830"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=2510192778"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=2510195892"
-    plr.Character.Humanoid:ChangeState(3) 
+	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616139451"
+	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616133594"
+	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616134815"
+    plr.Character  .Humanoid:ChangeState(3) 
     Animate.Disabled = false
     end
 })

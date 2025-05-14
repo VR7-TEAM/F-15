@@ -67,20 +67,20 @@ end
 
 function generatePartCode(part)
     local code = string.format([[
-local part = Instance.new("Part")
-part.Name = "%s"
-part.Position = Vector3.new(%s, %s, %s)
-part.Size = Vector3.new(%s, %s, %s)
-part.Anchored = %s
-part.CanCollide = %s
-part.BrickColor = BrickColor.new("%s")
-part.Parent = workspace
-]], 
-    part.Name,
-    tostring(part.Position.X), tostring(part.Position.Y), tostring(part.Position.Z),
-    tostring(part.Size.X), tostring(part.Size.Y), tostring(part.Size.Z),
-    tostring(part.Anchored), tostring(part.CanCollide),
-    tostring(part.BrickColor.Name))
+        local part = Instance.new("Part")
+        part.Name = "%s"
+        part.Position = Vector3.new(%s, %s, %s)
+        part.Size = Vector3.new(%s, %s, %s)
+        part.Anchored = %s
+        part.CanCollide = %s
+        part.BrickColor = BrickColor.new("%s")
+        part.Parent = workspace
+        ]], 
+        part.Name,
+        tostring(part.Position.X), tostring(part.Position.Y), tostring(part.Position.Z),
+        tostring(part.Size.X), tostring(part.Size.Y), tostring(part.Size.Z),
+        tostring(part.Anchored), tostring(part.CanCollide),
+        tostring(part.BrickColor.Name))
     
     return code
 end
@@ -674,60 +674,6 @@ TrollingMain:AddButton({
     end
 })
 
-
-TrollingMain:AddToggle({
-    Title = "Safe Place", 
-    Description = "Creates a safe platform far away and teleports you there",
-    Default = false,
-    Callback = function(state) 
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-        local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-        local oldPosition = HumanoidRootPart.Position
-        local safePlatform = nil
-        
-        if state then
-             safePlatform = Instance.new("Part")
-             safePlatform.Name = "SafePlatform"
-             safePlatform.Size = Vector3.new(100, 5, 100)
-             safePlatform.Position = Vector3.new(9999, 9999, 9999)
-             safePlatform.Anchored = true
-             safePlatform.CanCollide = true
-             safePlatform.BrickColor = BrickColor.new("Black")
-             safePlatform.Material = Enum.Material.SmoothPlastic
-            
-             local surfaceGui = Instance.new("SurfaceGui")
-             surfaceGui.Face = Enum.NormalId.Top
-             surfaceGui.Parent = safePlatform
-            
-             local textLabel = Instance.new("TextLabel")
-             textLabel.Size = UDim2.new(1, 0, 1, 0)
-             textLabel.BackgroundTransparency = 1
-             textLabel.TextColor3 = Color3.new(1, 0, 0)
-             textLabel.Text = "FRONT Evill"
-             textLabel.TextSize = 48
-             textLabel.Font = Enum.Font.SourceSansBold
-             textLabel.Parent = surfaceGui
-            
-             safePlatform.Parent = workspace
-             _G.SafePlatform = safePlatform
-             wait(0.1)
-             HumanoidRootPart.CFrame = CFrame.new(safePlatform.Position + Vector3.new(0, 10, 0))
-            else
-               safePlatform = _G.SafePlatform
-              if oldPosition then
-                  HumanoidRootPart.CFrame = CFrame.new(oldPosition)
-              end
-             if safePlatform then
-                 safePlatform:Destroy()
-                 _G.SafePlatform = nil
-             end    
-           end
-       end  
-   end 
-})
-
 local PlayerNameTargetting = Tabs.Targetting:AddSection("Target")
 local OptionsTargetting = Tabs.Targetting:AddSection("Options")
 
@@ -1240,6 +1186,59 @@ PlacesTeleport:AddButton({
         Notify("Error","There is no map")
     end
 })
+
+PlacesTeleport:AddToggle("SafePlaceToggle",{
+    Title = "Safe Place",
+    Description = nil,
+    Default = false,
+    Callback = function(state)
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+        local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+        local oldPosition = HumanoidRootPart.Position
+        local safePlatform = nil
+        
+        if state then
+            safePlatform = Instance.new("Part")
+            safePlatform.Name = "SafePlatform"
+            safePlatform.Size = Vector3.new(100, 5, 100)
+            safePlatform.Position = Vector3.new(9999, 9999, 9999)
+            safePlatform.Anchored = true
+            safePlatform.CanCollide = true
+            safePlatform.BrickColor = BrickColor.new("Black")
+            safePlatform.Material = Enum.Material.SmoothPlastic
+            
+            local surfaceGui = Instance.new("SurfaceGui")
+            surfaceGui.Face = Enum.NormalId.Top
+            surfaceGui.Parent = safePlatform
+            
+            local textLabel = Instance.new("TextLabel")
+            textLabel.Size = UDim2.new(1, 0, 1, 0)
+            textLabel.BackgroundTransparency = 1
+            textLabel.TextColor3 = Color3.new(1, 0, 0)
+            textLabel.Text = "FRONT Evill"
+            textLabel.TextSize = 48
+            textLabel.Font = Enum.Font.SourceSansBold
+            textLabel.Parent = surfaceGui
+            
+            safePlatform.Parent = workspace
+            _G.SafePlatform = safePlatform
+            wait(0.1)
+            HumanoidRootPart.CFrame = CFrame.new(safePlatform.Position + Vector3.new(0, 10, 0))
+        else
+            safePlatform = _G.SafePlatform
+            if oldPosition then
+                HumanoidRootPart.CFrame = CFrame.new(oldPosition)
+            end
+            if safePlatform then
+                safePlatform:Destroy()
+                _G.SafePlatform = nil
+            end
+        end
+    end
+})
+
 getgenv().Ready = true
 
 

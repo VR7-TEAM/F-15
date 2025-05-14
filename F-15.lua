@@ -1186,7 +1186,7 @@ PlacesTeleport:AddButton({
         Notify("Error","There is no map")
     end
 })
-
+  
 PlacesTeleport:AddToggle("SafePlaceToggle",{
     Title = "Safe Place",
     Description = nil,
@@ -1238,8 +1238,6 @@ PlacesTeleport:AddToggle("SafePlaceToggle",{
         end
     end
 })
-
-getgenv().Ready = true
 
 
 local ImBot = Tabs.Player:AddSection("AimBot")
@@ -2114,7 +2112,7 @@ DanceScript:AddButton({
 
 
 local TabHu = Tabs.Humando:AddSection("Parts")
-local ScriptNano = Tabs.Humando:AddSection("Script / Gui")
+local AudioHub = Tabs.Humando:AddSection("Audio")
 
 TabHu:AddToggle("SelectionToggle", {
     Title = "Select Part",
@@ -2146,6 +2144,28 @@ TabHu:AddButton({
         if selectedPart then
             DeletePart(selectedPart)
             selectedPart = nil
+        end
+    end
+})
+
+local SoundInput = AudioHub:AddInput("Sound ID", {
+    Title = "Music Player",
+    Description = "Enter song ID to play it",
+    Default = "",
+    Placeholder = "Enter song ID here",
+    Numeric = true,
+    Finished = true,
+    Callback = function(SoundID)
+        if SoundID and SoundID ~= "" then
+            local sound = Instance.new("Sound")
+            sound.SoundId = "rbxassetid://" .. SoundID
+            sound.Volume = 1
+            sound.Looped = true
+            sound.Parent = game.Workspace
+            sound:Play()
+            Notify("Hehe" , "the sound", SoundID , "is working" , 8)
+        else
+            print("Please enter a valid ID")
         end
     end
 })

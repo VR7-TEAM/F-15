@@ -2150,7 +2150,7 @@ TabHu:AddButton({
 
 local currentSound = nil
 
-local SoundInput = Tab:AddInput("Sound ID", {
+local SoundInput = TabHu:AddInput("Sound ID", {
     Title = "Music Player",
     Description = nil,
     Default = "",

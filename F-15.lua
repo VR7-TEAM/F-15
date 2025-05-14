@@ -680,7 +680,7 @@ TrollingMain:AddToggle({
     Description = "Creates a safe platform far away and teleports you there",
     Default = false,
     Callback = function(state) 
-            local Players = game:GetService("Players")
+        local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
         local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
         local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
@@ -722,9 +722,10 @@ TrollingMain:AddToggle({
              if safePlatform then
                  safePlatform:Destroy()
                  _G.SafePlatform = nil
-             end
-         end
-     end 
+             end    
+           end
+       end  
+   end 
 })
 
 local PlayerNameTargetting = Tabs.Targetting:AddSection("Target")

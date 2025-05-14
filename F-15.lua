@@ -2148,9 +2148,11 @@ TabHu:AddButton({
     end
 })
 
-local SoundInput = AudioHub:AddInput("Sound ID", {
+local currentSound = nil
+
+local SoundInput = Tab:AddInput("Sound ID", {
     Title = "Music Player",
-    Description = "Enter song ID to play it",
+    Description = nil,
     Default = "",
     Placeholder = "Enter song ID here",
     Numeric = true,
@@ -2160,12 +2162,31 @@ local SoundInput = AudioHub:AddInput("Sound ID", {
             local sound = Instance.new("Sound")
             sound.SoundId = "rbxassetid://" .. SoundID
             sound.Volume = 1
-            sound.Looped = true
+            sound.Looped = false
             sound.Parent = game.Workspace
             sound:Play()
-            Notify("Hehe" , "the sound", SoundID , "is working" , 8)
+            
+            if currentSound then
+                currentSound:Destroy()
+            end
+            currentSound = sound
+            
+            print("Playing song with ID:", SoundID)
         else
             print("Please enter a valid ID")
+        end
+    end
+})
+
+local StopSoundButton = TabHu:AddButton({
+    Title = "Stop Sound",
+    Description = nil,
+    Callback = function()
+        if currentSound then
+            currentSound:Stop()
+            print("Current sound stopped")
+        else
+            print("No sound is currently playing")
         end
     end
 })

@@ -2095,7 +2095,7 @@ AnimationGirl:AddButton({
        Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1212980338"
        Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1212980348"
        Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1212954642"
-       Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1213044953"
+       Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1213044939"
        Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1212900995"       
        plr.Character.Humanoid:ChangeState(3)
        Animate.Disabled = false

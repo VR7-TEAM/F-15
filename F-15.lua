@@ -578,81 +578,140 @@ AutofarmMain:AddToggle("AutoFarmHub", {
     Callback = function(state)
         if getgenv().Ready then
             getgenv().AutoFarms.Wins = state
-            local Players = game:GetService("Players")
-            local LocalPlayer = Players.LocalPlayer
-            local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-            local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-            local oldPosition = HumanoidRootPart.Position
-            local safePlatform = nil
+            getgenv().AutoMMRunning = state
             
             if state then
-                safePlatform = Instance.new("Part")
-                safePlatform.Name = "SafePlatform"
-                safePlatform.Size = Vector3.new(100, 5, 100)
-                safePlatform.Position = Vector3.new(9999, 9999, 9999)
-                safePlatform.Anchored = true
-                safePlatform.CanCollide = true
-                safePlatform.BrickColor = BrickColor.new("Black")
-                safePlatform.Material = Enum.Material.SmoothPlastic
+                if not _G.SafePlatform then
+                    local safePlatform = Instance.new("Part")
+                    safePlatform.Name = "SafePlatform"
+                    safePlatform.Size = Vector3.new(100, 5, 100)
+                    safePlatform.Position = Vector3.new(9999, 9999, 9999)
+                    safePlatform.Anchored = true
+                    safePlatform.CanCollide = true
+                    safePlatform.BrickColor = BrickColor.new("Black")
+                    safePlatform.Material = Enum.Material.SmoothPlastic
+                    
+                    local surfaceGui = Instance.new("SurfaceGui")
+                    surfaceGui.Face = Enum.NormalId.Top
+                    surfaceGui.Parent = safePlatform
+                    
+                    local textLabel = Instance.new("TextLabel")
+                    textLabel.Size = UDim2.new(1, 0, 1, 0)
+                    textLabel.BackgroundTransparency = 1
+                    textLabel.TextColor3 = Color3.new(1, 0, 0)
+                    textLabel.Text = "FRONT Evill"
+                    textLabel.TextSize = 48
+                    textLabel.Font = Enum.Font.SourceSansBold
+                    textLabel.Parent = surfaceGui
+                    
+                    safePlatform.Parent = workspace
+                    _G.SafePlatform = safePlatform
+                end
                 
-                local surfaceGui = Instance.new("SurfaceGui")
-                surfaceGui.Face = Enum.NormalId.Top
-                surfaceGui.Parent = safePlatform
-                
-                local textLabel = Instance.new("TextLabel")
-                textLabel.Size = UDim2.new(1, 0, 1, 0)
-                textLabel.BackgroundTransparency = 1
-                textLabel.TextColor3 = Color3.new(1, 0, 0)
-                textLabel.Text = "FRONT Evill"
-                textLabel.TextSize = 48
-                textLabel.Font = Enum.Font.SourceSansBold
-                textLabel.Parent = surfaceGui
-                
-                safePlatform.Parent = workspace
-                _G.SafePlatform = safePlatform
-                
-                spawn(function()
-                    while state do
+                local Players = game:GetService("Players")
+                local LocalPlayer = Players.LocalPlayer
+                getgenv().oldPosition = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character.HumanoidRootPart.Position or Vector3.new(0, 0, 0)
+                if not getgenv().CharacterAddedConnection then
+                    getgenv().CharacterAddedConnection = LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+                        if not getgenv().AutoMMRunning then return end
+                        
+                        local HumanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart")
+                        local Humanoid = newCharacter:WaitForChild("Humanoid")
+                        
                         wait(1)
-                        pcall(function()
-                            local playerRole = GetTeamOf(LocalPlayer)
-                            
-                            if playerRole == "Murder" then
-                                for _, player in pairs(Players:GetPlayers()) do
-                                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
-                                        MurderKill(player)
-                                        wait(0.5)
-                                    end
-                                end
-                            elseif playerRole == "Sheriff" or playerRole == "Innocent" then
-                                HumanoidRootPart.CFrame = CFrame.new(safePlatform.Position + Vector3.new(0, 10, 0))
-                                
-                                spawn(function()
-                                    wait(60)
-                                    if GetMurder() then
-                                        getgenv().FlingMurder = true
-                                    end
-                                end)
-                                
-                                spawn(function()
-                                    while state do
-                                        task.wait()
-                                        HumanoidRootPart.CFrame = CFrame.new(safePlatform.Position + Vector3.new(math.random(-10, 10), 10, math.random(-10, 10)))
+                        
+                        spawn(function()
+                            while getgenv().AutoMMRunning and newCharacter.Parent do
+                                pcall(function()
+                                    local playerRole = GetTeamOf(LocalPlayer)
+                                    
+                                    if playerRole == "Murder" then
+                                        for _, player in pairs(Players:GetPlayers()) do
+                                            if player ~= LocalPlayer and player.Character and 
+                                               player.Character:FindFirstChild("Humanoid") and 
+                                               player.Character.Humanoid.Health > 0 then
+                                                MurderKill(player)
+                                                wait(0.5)
+                                            end
+                                        end
+                                    elseif playerRole == "Sheriff" or playerRole == "Innocent" then
+                                        if _G.SafePlatform and HumanoidRootPart then
+                                            HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(0, 10, 0))
+                                            
+                                            HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(math.random(-10, 10), 10, math.random(-10, 10)))
+                                        end
                                     end
                                 end)
+                                wait(0.1)
+                            end
+                        end)
+                        
+                        spawn(function()
+                            wait(60)
+                            if getgenv().AutoMMRunning and GetMurder() then
+                                getgenv().FlingMurder = true
+                                wait(10)
+                                getgenv().FlingMurder = false
+                            end
+                        end)
+                    end)
+                end
+                
+                if LocalPlayer.Character then
+                    local HumanoidRootPart = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if HumanoidRootPart then
+                        spawn(function()
+                            while getgenv().AutoMMRunning and LocalPlayer.Character do
+                                pcall(function()
+                                    local playerRole = GetTeamOf(LocalPlayer)
+                                    
+                                    if playerRole == "Murder" then
+                                        for _, player in pairs(Players:GetPlayers()) do
+                                            if player ~= LocalPlayer and player.Character and 
+                                               player.Character:FindFirstChild("Humanoid") and 
+                                               player.Character.Humanoid.Health > 0 then
+                                                MurderKill(player)
+                                                wait(0.5)
+                                            end
+                                        end
+                                    elseif playerRole == "Sheriff" or playerRole == "Innocent" then
+                                        if _G.SafePlatform and HumanoidRootPart then
+                                            HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(0, 10, 0))
+                                            HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(math.random(-10, 10), 10, math.random(-10, 10)))
+                                        end
+                                    end
+                                end)
+                                wait(0.1)
+                            end
+                        end)
+                        spawn(function()
+                            wait(60)
+                            if getgenv().AutoMMRunning and GetMurder() then
+                                getgenv().FlingMurder = true
+                                wait(10)
+                                getgenv().FlingMurder = false
                             end
                         end)
                     end
-                end)
-            else
-                getgenv().FlingMurder = false
-                if oldPosition then
-                    HumanoidRootPart.CFrame = CFrame.new(oldPosition)
                 end
+            else
+                getgenv().AutoMMRunning = false
+                getgenv().FlingMurder = false
+                
+                if getgenv().CharacterAddedConnection then
+                    getgenv().CharacterAddedConnection:Disconnect()
+                    getgenv().CharacterAddedConnection = nil
+                end
+                
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and getgenv().oldPosition then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(getgenv().oldPosition)
+                end
+                
                 if _G.SafePlatform then
                     _G.SafePlatform:Destroy()
                     _G.SafePlatform = nil
                 end
+                
             end
         end
     end

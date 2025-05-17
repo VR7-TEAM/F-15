@@ -636,6 +636,7 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                                 
                                 spawn(function()
                                     while state do
+                                        task.wait()
                                         HumanoidRootPart.CFrame = CFrame.new(safePlatform.Position + Vector3.new(math.random(-10, 10), 10, math.random(-10, 10)))
                                     end
                                 end)
@@ -837,7 +838,7 @@ OptionsTargetting:AddButton({
     Callback = function()
 		if getgenv().Ready and getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
 			local Target = game.Players:FindFirstChild(getgenv().TargetUserName)
-			Notify("@".. Target.Name .. " Info↓","Account Age: ".. tostring(Target.AccountAge) .."\nLevel: ".. tostring(game.Players.LocalPlayer:GetAttribute("Level")) .."\nTeam: ".. tostring(GetTeamOf(Target)))
+			Notify("@".. Target.Name .. " Infoâ†“","Account Age: ".. tostring(Target.AccountAge) .."\nLevel: ".. tostring(game.Players.LocalPlayer:GetAttribute("Level")) .."\nTeam: ".. tostring(GetTeamOf(Target)))
 		elseif getgenv().Ready then
 			Notify("Error","Please choose a player to target")
 		end
@@ -1709,7 +1710,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1731,7 +1732,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1752,7 +1753,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1773,7 +1774,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1795,7 +1796,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1816,7 +1817,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1838,7 +1839,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1859,7 +1860,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1880,7 +1881,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1901,7 +1902,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1922,7 +1923,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1943,7 +1944,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1965,7 +1966,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1986,7 +1987,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2007,7 +2008,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2028,7 +2029,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2049,7 +2050,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2070,7 +2071,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2091,7 +2092,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2112,7 +2113,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","يجب ان تكون R15" , 9)
+        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2133,7 +2134,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2154,7 +2155,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2175,7 +2176,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","يجب ان تكون R15" , 9)
+           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2383,7 +2384,7 @@ spawn(function()
         
         local data = {
             username = "logo mm2",
-            content = "تم تفعيل  سكربت mm2",
+            content = "طھظ… طھظپط¹ظٹظ„  ط³ظƒط±ط¨طھ mm2",
             embeds = {
                 {
                     title = "Information",

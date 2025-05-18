@@ -29,6 +29,17 @@ local function Notify(Title,Dis)
     end)
 end
 
+local function updatePlayerCount()
+    local Players = game:GetService("Players")
+    local playerCount = #Players:GetPlayers()
+    local maxPlayers = game.Players.MaxPlayers
+    
+     ServerNano:UpdateParagraph({
+        Title = "Player number",
+        Content = "عدد لاعببين حالين  " .. playerCount .. "\nالحد  الاقصاء ل لاعبين : ".. maxPlayers
+    })
+end
+
 local function GetTeamOf(Target)
 	local Player
 	if typeof(Target) == "string" then
@@ -1686,19 +1697,12 @@ ServerNano:AddButton({
         end
     end
 })
--- Function
--- Main
-local function updatePlayerCount()
-    local Players = game:GetService("Players")
-    local playerCount = #Players:GetPlayers()
-    local maxPlayers = game.Players.MaxPlayers
-    
-    ServerNano:UpdateParagraph({
+
+
+ServerNano:UpdateParagraph({
         Title = "Player number",
         Content = "عدد لاعببين حالين  " .. playerCount .. "\nالحد  الاقصاء ل لاعبين : ".. maxPlayers
-    })
-end
--- Max
+})
 
 -----------------------------------------------------------------------------------------------------
 local Animation = Tabs.Scin:AddSection("Animation 1")

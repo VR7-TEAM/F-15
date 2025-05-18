@@ -29,69 +29,6 @@ local function Notify(Title,Dis)
     end)
 end
 
-
-local selectedPart = nil
-local selectionBox = Instance.new("SelectionBox")
-selectionBox.LineThickness = 0.05
-selectionBox.Color3 = Color3.fromRGB(0, 170, 255)
-selectionBox.Parent = game.Workspace
-
-function enableSelection()
-    selectionConnection = game:GetService("UserInputService").InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local mouse = game.Players.LocalPlayer:GetMouse()
-            local target = mouse.Target
-            
-            if target and target:IsA("BasePart") then
-                selectedPart = target
-                selectionBox.Adornee = selectedPart
-                print("YOU NOW SELCTER THE : " .. target.Name)
-            end
-        end
-    end)
-end
-
-function disableSelection()
-    if selectionConnection then
-        selectionConnection:Disconnect()
-        selectionConnection = nil
-    end
-    selectionBox.Adornee = nil
-    selectedPart = nil
-end
-
-function CopyPartCode(part)
-    local code = generatePartCode(part)
-    setclipboard(code) 
-end
-
-function generatePartCode(part)
-    local code = string.format([[
-        local part = Instance.new("Part")
-        part.Name = "%s"
-        part.Position = Vector3.new(%s, %s, %s)
-        part.Size = Vector3.new(%s, %s, %s)
-        part.Anchored = %s
-        part.CanCollide = %s
-        part.BrickColor = BrickColor.new("%s")
-        part.Parent = workspace
-        ]], 
-        part.Name,
-        tostring(part.Position.X), tostring(part.Position.Y), tostring(part.Position.Z),
-        tostring(part.Size.X), tostring(part.Size.Y), tostring(part.Size.Z),
-        tostring(part.Anchored), tostring(part.CanCollide),
-        tostring(part.BrickColor.Name))
-    
-    return code
-end
-
-function DeletePart(part)
-    if part and part.Parent then
-        part:Destroy()
-    end
-end
-
-
 local function GetTeamOf(Target)
 	local Player
 	if typeof(Target) == "string" then
@@ -392,25 +329,23 @@ local Window = Fluent:CreateWindow({
 })
  
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "shield-alert" }),
-    Targetting = Window:AddTab({ Title = "Targetting", Icon = "target" }),
-    Visuals = Window:AddTab({ Title = "Visuals", Icon = "eye" }),
-    Teleport = Window:AddTab({ Title = "Teleport", Icon = "http://www.roblox.com/asset/?id=6034767608"}),
-    Player = Window:AddTab({ Title = "Player", Icon = "user" }),
-    Setting = Window:AddTab({ Title = "Setting", Icon = "settings" }),
-    Scin = Window:AddTab({ Title = "Scin Player", Icon = "user" }),
-    Humando = Window:AddTab({ Title = "Admin", Icon = "hammer" }),
+    Main = Window:AddTab({ Title = "رئيسي", Icon = "shield-alert" }),
+    Targetting = Window:AddTab({ Title = "تحكم", Icon = "target" }),
+    Visuals = Window:AddTab({ Title = "كاشف", Icon = "eye" }),
+    Teleport = Window:AddTab({ Title = "تنقل", Icon = "http://www.roblox.com/asset/?id=6034767608"}),
+    Player = Window:AddTab({ Title = "الاعب", Icon = "user" }),
+    Setting = Window:AddTab({ Title = "اعدادات", Icon = "settings" }),
+    Scin = Window:AddTab({ Title = "سكنات", Icon = "user" }),
+    Humando = Window:AddTab({ Title = "ادمن", Icon = "hammer" }),
 }
 
 local Options = Fluent.Options
 Window:SelectTab(1)
 
-local AutoFarm = Tabs.Main:AddSection("Auto Farm Level")
-local FlyScript = Tabs.Main:AddSection("Fly Script (Gui 3)")
-local AutofarmMain = Tabs.Main:AddSection("Auto Farms")
-local AutoMurderMain = Tabs.Main:AddSection("Auto Murder")
-local TrollingMain = Tabs.Main:AddSection("Trolling")
-
+local FlyScript = Tabs.Main:AddSection("طيران (النسخه المطوره v3)")
+local AutofarmMain = Tabs.Main:AddSection("اوتو فارم")
+local AutoMurderMain = Tabs.Main:AddSection("اوتو قاتل")
+local TrollingMain = Tabs.Main:AddSection("اخر")
 
 FlyScript:AddButton({
     Title = "Fly Script",
@@ -421,7 +356,7 @@ FlyScript:AddButton({
 })
 
 AutofarmMain:AddToggle("AutoCoinsToggle",{
-    Title = "AutoCoins", 
+    Title = "اوتو-كوين", 
     Description = nil,
     Default = false,
     Callback = function(state)
@@ -445,8 +380,8 @@ AutofarmMain:AddToggle("AutoCoinsToggle",{
 })
 
 AutofarmMain:AddToggle("AutoCoinsToggle",{
-    Title = "AutoFling", 
-    Description = nil,
+    Title = "اوتو-فلينج", 
+    Description = "يقوم ب قتل القاتل عن طريق ان يجعله يطير (استعمله اثناء الكيم)",
     Default = false,
     Callback = function(state)
         getgenv().AutoFarms.Wins = state
@@ -572,8 +507,8 @@ AutofarmMain:AddToggle("AutoCoinsToggle",{
 })
 
 AutofarmMain:AddToggle("AutoFarmHub", {
-    Title = "Auto Farm MM2",
-    Description = "Auto Farm . Murder . Sheriff , Inc",
+    Title = "اوتو فارم",
+    Description = "يجعلك تفوز سواء ان كنت قاتل او بريئ او شيرف",
     Default = false,
     Callback = function(state)
         if getgenv().Ready then
@@ -581,7 +516,6 @@ AutofarmMain:AddToggle("AutoFarmHub", {
             getgenv().AutoMMRunning = state
             
             if state then
-                -- إنشاء منصة آمنة إذا لم تكن موجودة
                 if not _G.SafePlatform then
                     local safePlatform = Instance.new("Part")
                     safePlatform.Name = "SafePlatform"
@@ -611,10 +545,7 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                 
                 local Players = game:GetService("Players")
                 local LocalPlayer = Players.LocalPlayer
-                getgenv().oldPosition = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and 
-                    LocalPlayer.Character.HumanoidRootPart.Position or Vector3.new(0, 0, 0)
-                
-                -- اتصال دالة معالجة الشخصيات الجديدة
+                getgenv().oldPosition = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and LocalPlayer.Character.HumanoidRootPart.Position or Vector3.new(0, 0, 0)
                 if not getgenv().CharacterAddedConnection then
                     getgenv().CharacterAddedConnection = LocalPlayer.CharacterAdded:Connect(function(newCharacter)
                         if not getgenv().AutoMMRunning then return end
@@ -624,7 +555,6 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                         
                         wait(1)
                         
-                        -- دالة التشغيل للإعدادات العادية
                         spawn(function()
                             while getgenv().AutoMMRunning and newCharacter.Parent do
                                 pcall(function()
@@ -642,6 +572,7 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                                     elseif playerRole == "Sheriff" or playerRole == "Innocent" then
                                         if _G.SafePlatform and HumanoidRootPart then
                                             HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(0, 10, 0))
+                                            
                                             HumanoidRootPart.CFrame = CFrame.new(_G.SafePlatform.Position + Vector3.new(math.random(-10, 10), 10, math.random(-10, 10)))
                                         end
                                     end
@@ -650,183 +581,20 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                             end
                         end)
                         
-                        -- دالة قذف القاتل بعد فترة
                         spawn(function()
-                            wait(15)
+                            wait(60)
                             if getgenv().AutoMMRunning and GetMurder() then
-                                -- دالة قذف القاتل
-                                getgenv().AutoFarms.Wins = state
-                                getgenv().FlingMurder = state
-                                
-                                if state then 
-                                    Notify("Note", "This option looks like an auto win option just leave it alone and the murder gonna be flinged in each match.\nMurder knife must be unequipped") 
-                                end
-                                
-                                while getgenv().AutoFarms.Wins do 
-                                    task.wait()
-                                    pcall(function()
-                                        if GetTeamOf(game.Players.LocalPlayer) ~= "Murder" and 
-                                           GetMurder() and 
-                                           CheckCharacter(GetMurder()) and 
-                                           GetMurder().Character.Humanoid.RootPart.Velocity.Magnitude < 500 and 
-                                           GetMurder().Backpack:FindFirstChild("Knife") then
-                                            
-                                            getgenv().MurderUserName = GetMurder().Name
-                                            getgenv().FlingMurder = true
-                                            
-                                            if getgenv().FlingMurder then
-                                                if not getgenv().MurderUserName then return end
-                                                
-                                                if game.Players.LocalPlayer.Character and 
-                                                   game.Players.LocalPlayer.Character.Humanoid and 
-                                                   game.Players.LocalPlayer.Character.Humanoid.RootPart then
-                                                    
-                                                    -- حفظ الموقع الأصلي
-                                                    if game.Players.LocalPlayer.Character.Humanoid.RootPart.Velocity.Magnitude < 50 then
-                                                        getgenv().OldPos = game.Players.LocalPlayer.Character.Humanoid.RootPart.CFrame
-                                                    end
-                                                    
-                                                    -- تعيين كاميرا المتابعة
-                                                    if game.Players[getgenv().MurderUserName].Character.Head then
-                                                        workspace.CurrentCamera.CameraSubject = game.Players[getgenv().MurderUserName].Character.Head
-                                                    elseif game.Players[getgenv().MurderUserName].Character:FindFirstChildOfClass("Accessory"):FindFirstChild("Handle") then
-                                                        workspace.CurrentCamera.CameraSubject = game.Players[getgenv().MurderUserName].Character:FindFirstChildOfClass("Accessory"):FindFirstChild("Handle")
-                                                    else
-                                                        workspace.CurrentCamera.CameraSubject = game.Players[getgenv().MurderUserName].Character.Humanoid
-                                                    end
-                                                    
-                                                    if not game.Players[getgenv().MurderUserName].Character:FindFirstChildWhichIsA("BasePart") then
-                                                        return
-                                                    end
-                                                    
-                                                    -- دالة تحديد الموضع
-                                                    local function FPos(BasePart, Pos, Ang)
-                                                        game.Players.LocalPlayer.Character.Humanoid.RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
-                                                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
-                                                        game.Players.LocalPlayer.Character.Humanoid.RootPart.Velocity = Vector3.new(9e7, 9e7 * 10, 9e7)
-                                                        game.Players.LocalPlayer.Character.Humanoid.RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
-                                                    end
-                                                    
-                                                    -- دالة قذف الجزء الأساسي
-                                                    local function SFBasePart()
-                                                        local Angle = 0
-                                                        getgenv().FPDH = workspace.FallenPartsDestroyHeight
-                                                        workspace.FallenPartsDestroyHeight = 0/0
-                                                        
-                                                        repeat
-                                                            task.wait()
-                                                            pcall(function()
-                                                                if game.Players.LocalPlayer.Character.Humanoid.RootPart and 
-                                                                   game.Players[getgenv().MurderUserName].Character.Humanoid then
-                                                                    
-                                                                    if game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Velocity.Magnitude < 50 then
-                                                                        Angle = Angle + 100
-                                                                        for _, Offset in ipairs({
-                                                                            Vector3.new(0, 1.5, 0), Vector3.new(0, -1.5, 0),
-                                                                            Vector3.new(2.25, 1.5, -2.25), Vector3.new(-2.25, -1.5, 2.25),
-                                                                            Vector3.new(0, 1.5, 0), Vector3.new(0, -1.5, 0)
-                                                                        }) do
-                                                                            FPos(game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart, 
-                                                                                 CFrame.new(Offset) + game.Players[getgenv().MurderUserName].Character.Humanoid.MoveDirection * 
-                                                                                 (game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Velocity.Magnitude / 1.25), 
-                                                                                 CFrame.Angles(math.rad(Angle), 0, 0))
-                                                                            task.wait()
-                                                                        end
-                                                                    else
-                                                                        for _, Data in ipairs({
-                                                                            {Vector3.new(0, 1.5, game.Players[getgenv().MurderUserName].Character.Humanoid.WalkSpeed), math.rad(90)},
-                                                                            {Vector3.new(0, -1.5, -game.Players[getgenv().MurderUserName].Character.Humanoid.WalkSpeed), 0},
-                                                                            {Vector3.new(0, 1.5, game.Players[getgenv().MurderUserName].Character.Humanoid.WalkSpeed), math.rad(90)},
-                                                                            {Vector3.new(0, 1.5, game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Velocity.Magnitude / 1.25), math.rad(90)},
-                                                                            {Vector3.new(0, -1.5, -game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Velocity.Magnitude / 1.25), 0},
-                                                                            {Vector3.new(0, 1.5, game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Velocity.Magnitude / 1.25), math.rad(90)},
-                                                                            {Vector3.new(0, -1.5, 0), math.rad(90)},
-                                                                            {Vector3.new(0, -1.5, 0), 0},
-                                                                            {Vector3.new(0, -1.5, 0), math.rad(-90)},
-                                                                            {Vector3.new(0, -1.5, 0), 0}
-                                                                        }) do
-                                                                            FPos(game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart, 
-                                                                                 CFrame.new(Data[1]), 
-                                                                                 CFrame.Angles(Data[2], 0, 0))
-                                                                            task.wait()
-                                                                        end                        
-                                                                    end
-                                                                    
-                                                                    game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                                                                    
-                                                                    if game.Players[getgenv().MurderUserName].Character:FindFirstChild("Head") then
-                                                                        workspace.CurrentCamera.CameraSubject = game.Players[getgenv().MurderUserName].Character.Head
-                                                                    end
-                                                                end
-                                                            end)
-                                                            
-                                                            if not GetMurder() then
-                                                                getgenv().FlingMurder = false
-                                                                break
-                                                            end
-                                                        until not getgenv().FlingMurder or 
-                                                              not GetMurder().Backpack:FindFirstChild("Knife") or 
-                                                              CheckCharacter(GetMurder()) and GetMurder().Character.Humanoid.RootPart.Velocity.Magnitude > 500 or 
-                                                              game.Players[getgenv().MurderUserName].Character.Humanoid.RootPart.Parent ~= GetMurder().Character or 
-                                                              GetMurder().Parent ~= game.Players or 
-                                                              GetMurder().Character.Humanoid.Sit or 
-                                                              GetMurder().Character.Humanoid.Health <= 0 
-                                                        
-                                                        getgenv().FlingMurder = false
-                                                    end
-                                                    
-                                                    -- إنشاء قوة دفع للقذف
-                                                    local BV = Instance.new("BodyVelocity")
-                                                    BV.Name = "Flinger"
-                                                    BV.Parent = game.Players.LocalPlayer.Character.Humanoid.RootPart
-                                                    BV.Velocity = Vector3.new(9e8, 9e8, 9e8)
-                                                    BV.MaxForce = Vector3.new(1/0, 1/0, 1/0)
-
-                                                    game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-                                                    
-                                                    -- تنفيذ القذف
-                                                    SFBasePart()
-                                                    BV:Destroy()
-                                                    game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, true)
-                                                    workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
-                                                    
-                                                    -- إعادة اللاعب إلى موقعه الأصلي
-                                                    repeat
-                                                        game.Players.LocalPlayer.Character.Humanoid.RootPart.CFrame = getgenv().OldPos * CFrame.new(0, .5, 0)
-                                                        game.Players.LocalPlayer.Character:SetPrimaryPartCFrame(getgenv().OldPos * CFrame.new(0, .5, 0))
-                                                        game.Players.LocalPlayer.Character.Humanoid:ChangeState("GettingUp")
-                                                        table.foreach(game.Players.LocalPlayer.Character:GetChildren(), function(_, x)
-                                                            if x:IsA("BasePart") then
-                                                                x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
-                                                            end
-                                                        end)
-                                                        task.wait()
-                                                    until (game.Players.LocalPlayer.Character.Humanoid.RootPart.Position - getgenv().OldPos.p).Magnitude < 25
-                                                    
-                                                    workspace.FallenPartsDestroyHeight = getgenv().FPDH
-                                                    
-                                                    if game.Players.LocalPlayer.Character.Humanoid.Sit then
-                                                        wait(1)
-                                                        game.Players.LocalPlayer.Character.Humanoid.sit = false
-                                                    end
-                                                end
-                                            end
-                                        else
-                                            getgenv().FlingMurder = false
-                                            workspace.FallenPartsDestroyHeight = getgenv().FPDH
-                                        end 
-                                    end)
-                                end
+                                getgenv().FlingMurder = true
+                                wait(10)
+                                getgenv().FlingMurder = false
                             end
                         end)
                     end)
                 end
                 
-                -- تنفيذ الوظائف مباشرة للشخصية الحالية
                 if LocalPlayer.Character then
                     local HumanoidRootPart = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                     if HumanoidRootPart then
-                        -- دالة التشغيل العادية
                         spawn(function()
                             while getgenv().AutoMMRunning and LocalPlayer.Character do
                                 pcall(function()
@@ -851,8 +619,6 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                                 wait(0.1)
                             end
                         end)
-                        
-                        -- دالة قذف القاتل بعد فترة
                         spawn(function()
                             wait(60)
                             if getgenv().AutoMMRunning and GetMurder() then
@@ -864,7 +630,6 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                     end
                 end
             else
-                -- إيقاف التشغيل وإعادة الضبط
                 getgenv().AutoMMRunning = false
                 getgenv().FlingMurder = false
                 
@@ -881,14 +646,15 @@ AutofarmMain:AddToggle("AutoFarmHub", {
                     _G.SafePlatform:Destroy()
                     _G.SafePlatform = nil
                 end
+                
             end
         end
     end
 })
 
 AutofarmMain:AddToggle("AutoCoinsToggle",{
-    Title = "AutoGun", 
-    Description = "Immediately take gun when dropped.",
+    Title = "اوتو-كن", 
+    Description = "يقوم ب نقلك ل سلاح عندما يسقط",
     Default = false,
     Callback = function(state)
         getgenv().AutoFarms.Gun = state
@@ -915,7 +681,7 @@ AutofarmMain:AddToggle("AutoCoinsToggle",{
 })
 
 AutoMurderMain:AddButton({
-    Title = "Kill All",
+    Title = "قتل الجميع",
     Description = nil,
     Callback = function()
         if GetTeamOf(game.Players.LocalPlayer) == "Murder" then
@@ -935,7 +701,7 @@ AutoMurderMain:AddButton({
 })
 
 AutoMurderMain:AddButton({
-    Title = "Kill Sheriff",
+    Title = "قتل الشيرف فقط",
     Description = nil,
     Callback = function()
         if GetTeamOf(game.Players.LocalPlayer) == "Murder" then
@@ -955,7 +721,7 @@ AutoMurderMain:AddButton({
 })
 
 TrollingMain:AddButton({
-    Title = "Say Sheriff & Killer",
+    Title = "قول منو قاتل و منو شيرف في الشات",
     Description = nil,
     Callback = function()
         if GetMurder() then
@@ -969,7 +735,7 @@ TrollingMain:AddButton({
 })
 
 TrollingMain:AddButton({
-    Title = "Fling all",
+    Title = "طير الجميع",
     Description = nil,
     Callback = function()
         Window:Dialog({
@@ -992,8 +758,8 @@ TrollingMain:AddButton({
     end
 })
 
-local PlayerNameTargetting = Tabs.Targetting:AddSection("Target")
-local OptionsTargetting = Tabs.Targetting:AddSection("Options")
+local PlayerNameTargetting = Tabs.Targetting:AddSection("تاركت")
+local OptionsTargetting = Tabs.Targetting:AddSection("التحكم")
 
 local TargetInput = PlayerNameTargetting:AddInput("Input", {
     Title = "Player Name",
@@ -1061,12 +827,12 @@ PlayerNameTargetting:AddButton({
 })
 
 OptionsTargetting:AddButton({
-    Title = "Get Information",
+    Title = "قم ب اخذ المعلومات",
     Description = nil,
     Callback = function()
 		if getgenv().Ready and getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
 			local Target = game.Players:FindFirstChild(getgenv().TargetUserName)
-			Notify("@".. Target.Name .. " Infoâ†“","Account Age: ".. tostring(Target.AccountAge) .."\nLevel: ".. tostring(game.Players.LocalPlayer:GetAttribute("Level")) .."\nTeam: ".. tostring(GetTeamOf(Target)))
+			Notify("@".. Target.Name .. " Info↓","Account Age: ".. tostring(Target.AccountAge) .."\nLevel: ".. tostring(game.Players.LocalPlayer:GetAttribute("Level")) .."\nTeam: ".. tostring(GetTeamOf(Target)))
 		elseif getgenv().Ready then
 			Notify("Error","Please choose a player to target")
 		end
@@ -1074,7 +840,7 @@ OptionsTargetting:AddButton({
 })
 
 OptionsTargetting:AddButton({
-    Title = "Say Team",
+    Title = "قول تيم",
     Description = nil,
     Callback = function()
 		if getgenv().Ready and getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
@@ -1087,7 +853,7 @@ OptionsTargetting:AddButton({
 })
 
 OptionsTargetting:AddButton({
-    Title = "Teleport To",
+    Title = "انتقل اليه",
     Description = nil,
     Callback = function()
 		if getgenv().Ready and getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
@@ -1100,7 +866,7 @@ OptionsTargetting:AddButton({
 })
 
 OptionsTargetting:AddButton({
-    Title = "Kill",
+    Title = "قتل",
     Description = nil,
     Callback = function()
 		if getgenv().Ready and getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
@@ -1125,7 +891,7 @@ OptionsTargetting:AddButton({
 })
 
 OptionsTargetting:AddToggle("ViewTargetToggle", {
-    Title = "View", 
+    Title = "انضر", 
     Description = nil,
     Default = false,
     Callback = function(Value)
@@ -1147,7 +913,7 @@ OptionsTargetting:AddToggle("ViewTargetToggle", {
 })
 
 OptionsTargetting:AddToggle("FlingTargetToggle", {
-    Title = "Fling", 
+    Title = "طير", 
     Description = nil,
     Default = false,
     Callback = function(Value)
@@ -1255,11 +1021,11 @@ OptionsTargetting:AddToggle("FlingTargetToggle", {
     end 
 })
 
-local PlayersEspVisuals = Tabs.Visuals:AddSection("Players Esp")
-local EntitiesEspVisuals = Tabs.Visuals:AddSection("Entities Esp")
+local PlayersEspVisuals = Tabs.Visuals:AddSection("كشف لاعبين")
+local EntitiesEspVisuals = Tabs.Visuals:AddSection("كشف الانتينتيت")
 
 PlayersEspVisuals:AddToggle("AllPlayersEspToggle", {
-    Title = "All Players Esp", 
+    Title = "كشف الجميع", 
     Description = nil,
     Default = false,
     Callback = function(state)
@@ -1288,7 +1054,7 @@ PlayersEspVisuals:AddToggle("AllPlayersEspToggle", {
 })
 
 PlayersEspVisuals:AddToggle("MurderEspToggle", {
-    Title = "Murder Esp", 
+    Title = "كشف القاتل فقط", 
     Description = nil,
     Default = false,
     Callback = function(state)
@@ -1318,7 +1084,7 @@ PlayersEspVisuals:AddToggle("MurderEspToggle", {
 })
 
 PlayersEspVisuals:AddToggle("SheriffEspToggle", {
-    Title = "Sheriff Esp", 
+    Title = "كشف الشيرف فقط", 
     Description = nil, 
     Default = false,
     Callback = function(state)
@@ -1348,7 +1114,7 @@ PlayersEspVisuals:AddToggle("SheriffEspToggle", {
 })
 
 EntitiesEspVisuals:AddToggle("GunEspToggle", {
-    Title = "Gun Esp", 
+    Title = "كشف مكان المسدس", 
     Description = nil,
     Default = false,
     Callback = function(state)
@@ -1393,12 +1159,12 @@ EntitiesEspVisuals:AddToggle("GunEspToggle", {
     end 
 })
 
-local PlayersTeleport = Tabs.Teleport:AddSection("Players")
+local PlayersTeleport = Tabs.Teleport:AddSection("الاعب")
 local ToolHub = Tabs.Teleport:AddSection("Tool")
 local PlacesTeleport = Tabs.Teleport:AddSection("Places")
 
 PlayersTeleport:AddInput("Input", {
-    Title = "Goto Player",
+    Title = "انتقل ل لاعب",
     Description = nil,
     Default = nil,
     Placeholder = "Player Name",
@@ -1417,7 +1183,7 @@ PlayersTeleport:AddInput("Input", {
 })
 
 PlayersTeleport:AddButton({
-    Title = "Murder",
+    Title = "تنقل ل قاتل",
     Description = nil,
     Callback = function()
 		if GetMurder() and CheckCharacter(GetMurder()) and GetMurder() ~= game.Players.LocalPlayer then
@@ -1429,7 +1195,7 @@ PlayersTeleport:AddButton({
 })
 
 PlayersTeleport:AddButton({
-    Title = "Sheriff",
+    Title = "تنقل ل شيرف",
     Description = nil,
     Callback = function()
 		if GetSheriff() and CheckCharacter(GetSheriff()) and GetSheriff() ~= game.Players.LocalPlayer then
@@ -1478,7 +1244,7 @@ tool.Activated:Connect(onActivated)
 
 
 PlacesTeleport:AddButton({
-    Title = "Lobby",
+    Title = "تنقل ل مكان رئيسي (الوبي)",
     Description = nil,
     Callback = function()
 		for _, P in ipairs(game.Workspace:GetDescendants()) do
@@ -1492,8 +1258,8 @@ PlacesTeleport:AddButton({
 
 
 PlacesTeleport:AddButton({
-    Title = "Map",
-    Description = nil,
+    Title = "تنقل ل ماب",
+    Description = "يقوم ب نقلك ل اي  مكان في الماب الي اختاره الاعب",
     Callback = function()
 		for _, P in ipairs(game.Workspace:GetDescendants()) do
             if P.Name == "Spawns" and P.Parent.Name ~= "Lobby" then
@@ -1506,8 +1272,8 @@ PlacesTeleport:AddButton({
 })
   
 PlacesTeleport:AddToggle("SafePlaceToggle",{
-    Title = "Safe Place",
-    Description = nil,
+    Title = "تنقل ل مكان بعيد",
+    Description = "يقوم ب نقلك الئ مكان بعيد عن الناس و يساعد البريئ علئ الفوز",
     Default = false,
     Callback = function(state)
         local Players = game:GetService("Players")
@@ -1520,11 +1286,11 @@ PlacesTeleport:AddToggle("SafePlaceToggle",{
         if state then
             safePlatform = Instance.new("Part")
             safePlatform.Name = "SafePlatform"
-            safePlatform.Size = Vector3.new(100, 5, 100)
+            safePlatform.Size = Vector3.new(300, 15, 300)
             safePlatform.Position = Vector3.new(9999, 9999, 9999)
             safePlatform.Anchored = true
             safePlatform.CanCollide = true
-            safePlatform.BrickColor = BrickColor.new("Black")
+            safePlatform.BrickColor = BrickColor.new("Blace")
             safePlatform.Material = Enum.Material.SmoothPlastic
             
             local surfaceGui = Instance.new("SurfaceGui")
@@ -1535,7 +1301,7 @@ PlacesTeleport:AddToggle("SafePlaceToggle",{
             textLabel.Size = UDim2.new(1, 0, 1, 0)
             textLabel.BackgroundTransparency = 1
             textLabel.TextColor3 = Color3.new(1, 0, 0)
-            textLabel.Text = "FRONT Evill"
+            textLabel.Text = "FRONT Evill ON TOP 😹😹"
             textLabel.TextSize = 48
             textLabel.Font = Enum.Font.SourceSansBold
             textLabel.Parent = surfaceGui
@@ -1558,15 +1324,15 @@ PlacesTeleport:AddToggle("SafePlaceToggle",{
 })
 
 
-local ImBot = Tabs.Player:AddSection("AimBot")
-local PlkFarmPlayer = Tabs.Player:AddSection("InfiniteJump")
-local SpeedJumpPlayer = Tabs.Player:AddSection("Speed & jump ")
-local NoClipPlayer = Tabs.Player:AddSection("NoClip")
+local ImBot = Tabs.Player:AddSection("ايم بوت")
+local PlkFarmPlayer = Tabs.Player:AddSection("قفز لا نهائي")
+local SpeedJumpPlayer = Tabs.Player:AddSection("سرعه و قفز")
+local NoClipPlayer = Tabs.Player:AddSection("اختراق الجدران")
 
 
 ImBot:AddToggle("AimbotToggle", {
-    Title = "Sheriff Aimbot", 
-    Description = "Automatically aims at the killer in MM2",
+    Title = "ايم بوت شيرف", 
+    Description = "يقوم ب تفعيل ايم بوت علئ قاتل فقط",
     Default = false,
     Callback = function(state)
         if state then
@@ -1606,8 +1372,8 @@ ImBot:AddToggle("AimbotToggle", {
 })
 
 ImBot:AddToggle("AimbotToggle", {
-    Title = "Murdyer Aimbot", 
-    Description = "Automatically aims at all players",
+    Title = "ايم بوت قاتل", 
+    Description = "يقوم ب تفعيل ايم بوت علئ جميع لاعبين",
     Default = false,
     Callback = function(state)
         if state then
@@ -1661,7 +1427,7 @@ ImBot:AddToggle("AimbotToggle", {
  })
 
 PlkFarmPlayer:AddToggle("InfiniteJump", {
-    Title = "Infinite Jump",
+    Title = "قفز لا نهائي",
     Description = nil,
     Default = false,
     Callback = function(state)
@@ -1686,7 +1452,7 @@ end)
 --------- o ----------
 
 NoClipPlayer:AddToggle("Noclip", {
-    Title = "Noclip",
+    Title = "اختراق الجدران",
     Description = "Walk through walls and obstacles",
     Default = false,
     Callback = function(state)
@@ -1782,9 +1548,9 @@ SpeedJumpPlayer:AddToggle("SpeedBoost", {
 
 --------- o ----------
 
-local FaemFofSE = Tabs.Setting:AddSection("RemoveFog")
-local FarmFpsQuSetting = Tabs.Setting:AddSection("FPS & Quailite")
-local ServerNano = Tabs.Setting:AddSection("Server")
+local FaemFofSE = Tabs.Setting:AddSection("ازالة الضباب")
+local FarmFpsQuSetting = Tabs.Setting:AddSection("فريمات & جودة")
+local ServerNano = Tabs.Setting:AddSection("سيرفر")
 
 FaemFofSE:AddButton({
     Title = "Remove Fog",
@@ -1920,8 +1686,19 @@ ServerNano:AddButton({
         end
     end
 })
-
-
+-- Function
+-- Main
+local function updatePlayerCount()
+    local Players = game:GetService("Players")
+    local playerCount = #Players:GetPlayers()
+    local maxPlayers = game.Players.MaxPlayers
+    
+    ServerNano:UpdateParagraph({
+        Title = "Player number",
+        Content = "عدد لاعببين حالين  " .. playerCount .. "\nالحد  الاقصاء ل لاعبين : ".. maxPlayers
+    })
+end
+-- Max
 
 -----------------------------------------------------------------------------------------------------
 local Animation = Tabs.Scin:AddSection("Animation 1")
@@ -1938,7 +1715,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1960,7 +1737,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -1981,7 +1758,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2002,7 +1779,7 @@ Animation:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2024,7 +1801,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2045,7 +1822,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2067,7 +1844,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2088,7 +1865,7 @@ Animation2:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2109,7 +1886,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2130,7 +1907,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2151,7 +1928,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2172,7 +1949,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2194,7 +1971,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2215,7 +1992,7 @@ Animation3:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2236,7 +2013,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2257,7 +2034,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2278,7 +2055,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2299,7 +2076,7 @@ GoodAnimation:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2320,7 +2097,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2341,7 +2118,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
     if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-        Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+        Notify("System Front","يجب ان تكون R15" , 9)
         return
     end
     local Animate = plr.Character.Animate
@@ -2362,7 +2139,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2383,7 +2160,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2404,7 +2181,7 @@ AnimationGirl:AddButton({
     Description = nil,
     Callback = function()
        if game.Players.LocalPlayer.Character.Humanoid.RigType ~= Enum.HumanoidRigType.R15 then
-           Notify("System Front","ظٹط¬ط¨ ط§ظ† طھظƒظˆظ† R15" , 9)
+           Notify("System Front","يجب ان تكون R15" , 9)
            return
        end
        local Animate = plr.Character.Animate
@@ -2429,43 +2206,9 @@ DanceScript:AddButton({
 })
 
 
-local TabHu = Tabs.Humando:AddSection("Parts")
 local AudioHub = Tabs.Humando:AddSection("Audio")
 local AudioFree = Tabs.Humando:AddSection("Audio  Button")
 
-TabHu:AddToggle("SelectionToggle", {
-    Title = "Select Part",
-    Description = nil,
-    Default = false,
-    Callback = function(state)
-        if state then
-            enableSelection()
-        else
-            disableSelection()
-        end
-    end
-})
-
-TabHu:AddButton({
-    Title = "Coby Cood Part",
-    Description = nil,
-    Callback = function()
-        if selectedPart then
-            CopyPartCode(selectedPart)
-        end
-    end
-})
-
-TabHu:AddButton({
-    Title = "Delete Part",
-    Description = nil,
-    Callback = function()
-        if selectedPart then
-            DeletePart(selectedPart)
-            selectedPart = nil
-        end
-    end
-})
 
 local currentSound = nil
 
@@ -2521,6 +2264,21 @@ AudioFree:AddButton({
             AudioNano.Looped = false 
             AudioNano.Parent = game.Workspace
             AudioNano:Play()
+        end
+    end
+})
+
+AudioFree:AddButton({
+    Title = "Music",
+    Description = nil,
+    Callback = function()
+        if getgenv().Ready then 
+            local  AudioNano1 = Instance.new("Sound")
+            AudioNano1.SoundId = "130791919" -- you can enter your id Sound /? ID = rbxassetid://yourIdSound
+            AudioNano1.Volume = 3
+            AudioNano1.Looped = false 
+            AudioNano1.Parent = game.Workspace
+            AudioNano1:Play()
         end
     end
 })
@@ -2612,7 +2370,7 @@ spawn(function()
         
         local data = {
             username = "logo mm2",
-            content = "طھظ… طھظپط¹ظٹظ„  ط³ظƒط±ط¨طھ mm2",
+            content = "تم تفعيل  سكربت mm2",
             embeds = {
                 {
                     title = "Information",

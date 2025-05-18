@@ -1,4 +1,143 @@
--- تحميل مكتبة Fluent UI (تأكد من أن الرابط صحيح أو عدله حسب مصدر المكتبة)
+-- Function
+
+local function giveToolToPlayer(tool)
+    local player = game.Players.LocalPlayer
+    if player and player.Backpack then
+        local toolClone = tool:Clone()
+        toolClone.Parent = player.Backpack
+    end
+end
+
+local function createTeleportTool()
+    local TeleportTool = Instance.new("Tool")
+    TeleportTool.Name = "TeleportTool"
+    TeleportTool.RequiresHandle = false
+
+    local Mouse = nil
+    TeleportTool.Equipped:Connect(function()
+        local player = game.Players.LocalPlayer
+        Mouse = player:GetMouse()
+    end)
+
+    TeleportTool.Activated:Connect(function()
+        if Mouse and Mouse.Hit then
+            local character = game.Players.LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = Mouse.Hit + Vector3.new(0, 3, 0)
+            end
+        end
+    end)
+    return TeleportTool
+end
+
+local function createDeleteTool()
+    local DeleteTool = Instance.new("Tool")
+    DeleteTool.Name = "DeleteTool"
+    DeleteTool.RequiresHandle = false
+
+    local Mouse = nil
+    DeleteTool.Equipped:Connect(function()
+        local player = game.Players.LocalPlayer
+        Mouse = player:GetMouse()
+    end)
+
+    DeleteTool.Activated:Connect(function()
+        if Mouse and Mouse.Target then
+            local target = Mouse.Target
+            if target and target.Parent and not target:IsDescendantOf(game.Players.LocalPlayer.Character) then
+                target:Destroy()
+            end
+        end
+    end)
+    return DeleteTool
+end
+
+local function createShield()
+    local Shield = Instance.new("Part")
+    Shield.Name = "Shield"
+    Shield.Size = Vector3.new(4,5,1)
+    Shield.Transparency = 0.5
+    Shield.BrickColor = BrickColor.new("Bright blue")
+    Shield.Anchored = false
+    Shield.CanCollide = false
+
+    local Weld = Instance.new("WeldConstraint")
+
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    Shield.Parent = character
+    Shield.CFrame = hrp.CFrame * CFrame.new(0, 0, -2)
+    Weld.Part0 = Shield
+    Weld.Part1 = hrp
+    Weld.Parent = Shield
+
+    character.Humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+        if Shield and Shield.Parent then
+            if character.Humanoid.Health < character.Humanoid.MaxHealth then
+                character.Humanoid.Health = character.Humanoid.MaxHealth
+            end
+        end
+    end)
+    return Shield
+end
+
+local function createPunchTool()
+    local PunchTool = Instance.new("Tool")
+    PunchTool.Name = "PunchTool"
+    PunchTool.RequiresHandle = true
+
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1,1,1)
+    handle.Parent = PunchTool
+
+    PunchTool.Activated:Connect(function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local mouse = player:GetMouse()
+        if mouse.Target and mouse.Target.Parent and mouse.Target.Parent:FindFirstChild("Humanoid") then
+            local targetHumanoid = mouse.Target.Parent.Humanoid
+            local targetHRP = mouse.Target.Parent:FindFirstChild("HumanoidRootPart")
+            if targetHumanoid and targetHRP then
+                targetHumanoid:TakeDamage(20)
+                targetHRP.Velocity = (targetHRP.Position - character.HumanoidRootPart.Position).Unit * 100 + Vector3.new(0,50,0)
+            end
+        end
+    end)
+    return PunchTool
+end
+
+local function createPaintDeleteGun()
+    local PaintDeleteGun = Instance.new("Tool")
+    PaintDeleteGun.Name = "PaintDeleteGun"
+    PaintDeleteGun.RequiresHandle = true
+
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1,1,2)
+    handle.Parent = PaintDeleteGun
+
+    local mouse = nil
+    PaintDeleteGun.Equipped:Connect(function()
+        mouse = game.Players.LocalPlayer:GetMouse()
+    end)
+
+    PaintDeleteGun.Activated:Connect(function()
+        if mouse and mouse.Target then
+            local target = mouse.Target
+            if target and target:IsA("BasePart") then
+                target.BrickColor = BrickColor.new("Bright red")
+                wait(1)
+                target:Destroy()
+            end
+        end
+    end)
+    return PaintDeleteGun
+end
+
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
@@ -15,6 +154,7 @@ local PlayersTab = Window:AddTab({ Title = "Players Control", Icon = "👤" })
 local ServerTab = Window:AddTab({ Title = "Server Control", Icon = "🛠" })
 local AdminsTab = Window:AddTab({ Title = "Admins & Permissions", Icon = "🔒" })
 local AdvancedTab = Window:AddTab({ Title = "Advanced Commands", Icon = "⚙️" })
+local ToolsTab = Window:AddTab({ Title = "Tools", Icon = "🛠️" })
 
 -- دالة لجلب اللاعب بالاسم
 local function getPlayerByName(name)
@@ -725,5 +865,49 @@ AdvancedTab:AddButton({
                 end
             end
         end
+    end
+})
+
+ToolsTab:AddButton({
+    Title = "Give Teleport Tool",
+    Icon = "rbxassetid://3926305904",
+    Callback = function()
+        local tool = createTeleportTool()
+        giveToolToPlayer(tool)
+    end
+})
+
+ToolsTab:AddButton({
+    Title = "Give Delete Tool",
+    Icon = "rbxassetid://3926307977",
+    Callback = function()
+        local tool = createDeleteTool()
+        giveToolToPlayer(tool)
+    end
+})
+
+ToolsTab:AddButton({
+    Title = "Give Shield",
+    Icon = "rbxassetid://13374250",
+    Callback = function()
+        createShield()
+    end
+})
+
+ToolsTab:AddButton({
+    Title = "Give Punch Tool",
+    Icon = "rbxassetid://6286471343",
+    Callback = function()
+        local tool = createPunchTool()
+        giveToolToPlayer(tool)
+    end
+})
+
+ToolsTab:AddButton({
+    Title = "Give Paint & Delete Gun",
+    Icon = "rbxassetid://5038135013",
+    Callback = function()
+        local tool = createPaintDeleteGun()
+        giveToolToPlayer(tool)
     end
 })

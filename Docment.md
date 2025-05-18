@@ -3,3 +3,6 @@
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/VR7-TEAM/F-15/refs/heads/main/F-15.lua"))()
 ```
+```lua
+loadstrinf(game:HttpGet("https://raw.githubusercontent.com/VR7-TEAM/F-15/refs/heads/main/Admin.lua"))()
+```

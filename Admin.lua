@@ -144,7 +144,11 @@ end
 local function Notify(Title,Dis)
     pcall(function()
         Fluent:Notify({Title = tostring(Title),Content = tostring(Dis),Duration = 5})
-        local sound = Instance.new("Sound", game.Workspace) sound.SoundId = "rbxassetid://3398620867" sound.Volume = 1 sound.Ended:Connect(function() sound:Destroy() end) sound:Play()
+        local sound = Instance.new("Sound", game.Workspace)
+        sound.SoundId = "rbxassetid://3398620867"
+        sound.Volume = 1
+        sound.Ended:Connect(function() sound:Destroy() end)
+        sound:Play()
     end)
 end
 
@@ -171,48 +175,52 @@ end
 local IsOnMobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, game:GetService("UserInputService"):GetPlatform())
 function RandomTheme() local themes = {"Amethyst", "Light", "Aqua", "Rose", "Darker", "Dark"} return themes[math.random(1, #themes)] end
 local Guitheme = RandomTheme()
-if IsOnMobile then High = 360
-local teez
-teez = game:GetService("CoreGui").ChildAdded:Connect(function(P)
-	if P.Name == "ScreenGui" then
-		local ScreenGui = Instance.new("ScreenGui")
-		local Button = Instance.new("TextButton")
-		local UICorner = Instance.new("UICorner")
-		ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-		Button.Name = "Hider"
-		Button.Parent = P
-		Button.Size = UDim2.new(0, 100, 0, 50)
-		Button.Position = UDim2.new(0, 10, 0.5, -25)
-		Button.BackgroundTransparency = 0.5
-		Button.Font = Enum.Font.GothamBold
-		Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-		Button.Text = "Hide"
-		Button.TextScaled = true
-		Button.Draggable = true
-		Button.AutoButtonColor = false
-		local themeColors = {Light = Color3.fromRGB(255, 255, 255), Amethyst = Color3.fromRGB(153, 102, 204), Aqua = Color3.fromRGB(0, 255, 255), Rose = Color3.fromRGB(255, 182, 193), Darker = Color3.fromRGB(40, 40, 40), Dark = Color3.fromRGB(30, 30, 30)}
-		Button.BackgroundColor3 = themeColors[Guitheme] or Color3.fromRGB(255, 255, 255)
-		UICorner.Parent = Button
-		UICorner.CornerRadius = UDim.new(0, 12)
-		Button.MouseButton1Click:Connect(function()
-			for _, F in ipairs(P:GetChildren()) do
-				if F.Name ~= "Hider" and not F:FindFirstChild("UIListLayout") and not F:FindFirstChild("UISizeConstraint") then
-					if F.Visible then 
-					Button.Text = "View" F.Visible = false 
-					else 
-					Button.Text = "Hide" F.Visible = true 
-					end
-				end
-			end
-		end)
-		getgenv().Done = true
-	end
-end)
-spawn(function()
-	while not getgenv().Done do task.wait() end
-	if teez then teez:Disconnect() end
-	getgenv().Done = false
-end)
+local High
+if IsOnMobile then 
+    High = 360
+    local teez
+    teez = game:GetService("CoreGui").ChildAdded:Connect(function(P)
+        if P.Name == "ScreenGui" then
+            local ScreenGui = Instance.new("ScreenGui")
+            local Button = Instance.new("TextButton")
+            local UICorner = Instance.new("UICorner")
+            ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            Button.Name = "Hider"
+            Button.Parent = P
+            Button.Size = UDim2.new(0, 100, 0, 50)
+            Button.Position = UDim2.new(0, 10, 0.5, -25)
+            Button.BackgroundTransparency = 0.5
+            Button.Font = Enum.Font.GothamBold
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.Text = "Hide"
+            Button.TextScaled = true
+            Button.Draggable = true
+            Button.AutoButtonColor = false
+            local themeColors = {Light = Color3.fromRGB(255, 255, 255), Amethyst = Color3.fromRGB(153, 102, 204), Aqua = Color3.fromRGB(0, 255, 255), Rose = Color3.fromRGB(255, 182, 193), Darker = Color3.fromRGB(40, 40, 40), Dark = Color3.fromRGB(30, 30, 30)}
+            Button.BackgroundColor3 = themeColors[Guitheme] or Color3.fromRGB(255, 255, 255)
+            UICorner.Parent = Button
+            UICorner.CornerRadius = UDim.new(0, 12)
+            Button.MouseButton1Click:Connect(function()
+                for _, F in ipairs(P:GetChildren()) do
+                    if F.Name ~= "Hider" and not F:FindFirstChild("UIListLayout") and not F:FindFirstChild("UISizeConstraint") then
+                        if F.Visible then 
+                            Button.Text = "View" 
+                            F.Visible = false 
+                        else 
+                            Button.Text = "Hide" 
+                            F.Visible = true 
+                        end
+                    end
+                end
+            end)
+            getgenv().Done = true
+        end
+    end)
+    spawn(function()
+        while not getgenv().Done do task.wait() end
+        if teez then teez:Disconnect() end
+        getgenv().Done = false
+    end)
 else
     High = 460
 end
@@ -278,7 +286,7 @@ OptionsMain:AddButton({
 OptionsMain:AddButton({
     Title = "Teleport to Player",
     Callback = function()
-        if getgenv().Ready
+        if getgenv().Ready then
             local target = getPlayerByName(targetName)
             local localPlayer = game.Players.LocalPlayer
             if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and localPlayer.Character then
@@ -333,20 +341,20 @@ OptionsMain:AddToggle("ViewTargetToggle", {
     Description = nil,
     Default = false,
     Callback = function(Value)
-		getgenv().View = Value
+        getgenv().View = Value
         while getgenv().View and task.wait() do
-            if getgenv().TargetUserName and game.Players:FindFirstChild(getgenv().TargetUserName) then
-				pcall(function()
-					local Target = game.Players:FindFirstChild(getgenv().TargetUserName)
-					workspace.CurrentCamera.CameraSubject = Target.Character.Head 
-				end)
+            if targetName and game.Players:FindFirstChild(targetName) then
+                pcall(function()
+                    local Target = game.Players:FindFirstChild(targetName)
+                    workspace.CurrentCamera.CameraSubject = Target.Character.Head 
+                end)
             elseif getgenv().Ready then
-				workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
+                workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
                 Notify("Error","Please choose a player to target")
                 break
             end
         end
-		workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
+        workspace.CurrentCamera.CameraSubject = game.Players.LocalPlayer.Character.Humanoid
     end 
 })
 
@@ -504,4 +512,3 @@ spawn(function()
         end)
     end
 end)
-

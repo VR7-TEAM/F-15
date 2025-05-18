@@ -231,6 +231,7 @@ for _,O in ipairs(game:GetService("CoreGui"):GetChildren()) do
 end
 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local Window = Fluent:CreateWindow({
     Title =  game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,
     SubTitle = "By Front -evill / 7sone",
@@ -238,7 +239,7 @@ local Window = Fluent:CreateWindow({
     Size = UDim2.fromOffset(580, High),
     Acrylic = false,
     Theme = Guitheme,
-    MinimizeKey = Enum.KeyCode.B
+    MinimizeKey = Enum.KeyCode.B    or  Enum.KeyCode.K
 })
  
 local Tabs = {
@@ -271,6 +272,7 @@ local targetName = ""
 
 OptionsMain:AddButton({
     Title = "Bring Player",
+    Description = nil,
     Callback = function()
         if getgenv().Ready then
             local target = getPlayerByName(targetName)
@@ -284,6 +286,7 @@ OptionsMain:AddButton({
 
 OptionsMain:AddButton({
     Title = "Teleport to Player",
+    Description = nil,
     Callback = function()
         if getgenv().Ready then
             local target = getPlayerByName(targetName)
@@ -297,6 +300,7 @@ OptionsMain:AddButton({
 
 OptionsMain:AddButton({
     Title = "Kill Player",
+    Description = nil,
     Callback = function()
         if  getgenv().Ready then   
            local target = getPlayerByName(targetName)
@@ -309,6 +313,7 @@ OptionsMain:AddButton({
 
 OptionsMain:AddButton({
     Title = "Fling Player",
+    Description = nil,
     Callback = function()
          if getgenv().Ready then
              local target = getPlayerByName(targetName)
@@ -321,6 +326,7 @@ OptionsMain:AddButton({
 
 OptionsMain:AddButton({
     Title = "Freeze Player",
+    Description = nil,
     Callback = function()
         if  getgenv().Ready then
             local target = getPlayerByName(targetName)

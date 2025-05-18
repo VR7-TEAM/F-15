@@ -1,5 +1,4 @@
 -- Function
-
 local function giveToolToPlayer(tool)
     local player = game.Players.LocalPlayer
     if player and player.Backpack then
@@ -55,7 +54,7 @@ end
 local function createShield()
     local Shield = Instance.new("Part")
     Shield.Name = "Shield"
-    Shield.Size = Vector3.new(4,5,1)
+    Shield.Size = Vector3.new(4, 5, 1)
     Shield.Transparency = 0.5
     Shield.BrickColor = BrickColor.new("Bright blue")
     Shield.Anchored = false
@@ -90,7 +89,7 @@ local function createPunchTool()
 
     local handle = Instance.new("Part")
     handle.Name = "Handle"
-    handle.Size = Vector3.new(1,1,1)
+    handle.Size = Vector3.new(1, 1, 1)
     handle.Parent = PunchTool
 
     PunchTool.Activated:Connect(function()
@@ -102,7 +101,7 @@ local function createPunchTool()
             local targetHRP = mouse.Target.Parent:FindFirstChild("HumanoidRootPart")
             if targetHumanoid and targetHRP then
                 targetHumanoid:TakeDamage(20)
-                targetHRP.Velocity = (targetHRP.Position - character.HumanoidRootPart.Position).Unit * 100 + Vector3.new(0,50,0)
+                targetHRP.Velocity = (targetHRP.Position - character.HumanoidRootPart.Position).Unit * 100 + Vector3.new(0, 50, 0)
             end
         end
     end)
@@ -116,7 +115,7 @@ local function createPaintDeleteGun()
 
     local handle = Instance.new("Part")
     handle.Name = "Handle"
-    handle.Size = Vector3.new(1,1,2)
+    handle.Size = Vector3.new(1, 1, 2)
     handle.Parent = PaintDeleteGun
 
     local mouse = nil
@@ -136,8 +135,7 @@ local function createPaintDeleteGun()
     end)
     return PaintDeleteGun
 end
-
-
+ 
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
@@ -156,7 +154,6 @@ local AdminsTab = Window:AddTab({ Title = "Admins & Permissions", Icon = "🔒" 
 local AdvancedTab = Window:AddTab({ Title = "Advanced Commands", Icon = "⚙️" })
 local ToolsTab = Window:AddTab({ Title = "Tools", Icon = "🛠️" })
 
--- دالة لجلب اللاعب بالاسم
 local function getPlayerByName(name)
     for _, player in pairs(game.Players:GetPlayers()) do
         if player.Name:lower() == name:lower() then
@@ -269,7 +266,9 @@ PlayersTab:AddButton({
         if player.Character then
             for _, part in pairs(player.Character:GetDescendants()) do
                 if part:IsA("BasePart") or part:IsA("Decal") then
-                    part.Transparency = 0
+                    if part.Name ~= "HumanoidRootPart" then
+                        part.Transparency = 0
+                    end
                 end
             end
         end
@@ -294,7 +293,7 @@ PlayersTab:AddButton({
             local pos = localPlayer.Character.HumanoidRootPart.Position
             for _, player in pairs(game.Players:GetPlayers()) do
                 if player.Character and player ~= localPlayer then
-                    player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
+                    player.Character:MoveTo(pos + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
                 end
             end
         end
@@ -309,7 +308,7 @@ PlayersTab:AddButton({
             local pos = localPlayer.Character.HumanoidRootPart.Position
             for _, player in pairs(game.Players:GetPlayers()) do
                 if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
+                    player.Character:MoveTo(pos + Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
                 end
             end
         end
@@ -353,8 +352,9 @@ PlayersTab:AddButton({
                     noClipVal.Name = "NoClip"
                     noClipVal.Parent = humanoid
                     humanoid.PlatformStand = true
-                    spawn(function()
-                        while noClipVal.Parent do
+                    
+                    coroutine.wrap(function()
+                        while noClipVal and noClipVal.Parent do
                             for _, part in pairs(player.Character:GetChildren()) do
                                 if part:IsA("BasePart") then
                                     part.CanCollide = false
@@ -367,7 +367,7 @@ PlayersTab:AddButton({
                                 part.CanCollide = true
                             end
                         end
-                    end)
+                    end)()
                 end
             end
         end
@@ -426,7 +426,7 @@ ServerTab:AddButton({
     Title = "Toggle Chat",
     Callback = function()
         chatEnabled = not chatEnabled
-        game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, chatEnabled)
+        game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, chatEnabled)
     end
 })
 
@@ -474,8 +474,9 @@ ServerTab:AddButton({
 ServerTab:AddButton({
     Title = "Set Gravity",
     Callback = function()
-        Window:AddInput({
+        local gravityInput = Window:CreateInput({
             Title = "Enter Gravity Value",
+            Default = "196.2",
             Placeholder = "e.g. 196.2",
             Callback = function(value)
                 local gravity = tonumber(value)
@@ -488,7 +489,6 @@ ServerTab:AddButton({
 })
 
 -- ===== Admins & Permissions Tab =====
-
 AdminsTab:AddInput({
     Title = "Target Player Name",
     Default = "",
@@ -503,7 +503,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/admin " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/admin " .. target.Name, "All")
         end
     end
 })
@@ -513,7 +513,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/deadmin " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/deadmin " .. target.Name, "All")
         end
     end
 })
@@ -521,7 +521,7 @@ AdminsTab:AddButton({
 AdminsTab:AddButton({
     Title = "List All Players",
     Callback = function()
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/players", "All")
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/players", "All")
     end
 })
 
@@ -530,7 +530,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/mute " .. target.Name, "All")
         end
     end
 })
@@ -540,7 +540,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unmute " .. target.Name, "All")
         end
     end
 })
@@ -550,7 +550,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/ban " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/ban " .. target.Name, "All")
         end
     end
 })
@@ -560,7 +560,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unban " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unban " .. target.Name, "All")
         end
     end
 })
@@ -570,7 +570,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/kick " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/kick " .. target.Name, "All")
         end
     end
 })
@@ -580,7 +580,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/freeze " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/freeze " .. target.Name, "All")
         end
     end
 })
@@ -590,7 +590,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unfreeze " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/unfreeze " .. target.Name, "All")
         end
     end
 })
@@ -600,7 +600,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/giverank " .. target.Name .. " admin", "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/giverank " .. target.Name .. " admin", "All")
         end
     end
 })
@@ -610,7 +610,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/removerank " .. target.Name .. " admin", "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/removerank " .. target.Name .. " admin", "All")
         end
     end
 })
@@ -620,7 +620,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/promote " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/promote " .. target.Name, "All")
         end
     end
 })
@@ -630,7 +630,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/demote " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/demote " .. target.Name, "All")
         end
     end
 })
@@ -662,7 +662,7 @@ AdminsTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/reset " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/reset " .. target.Name, "All")
         end
     end
 })
@@ -670,22 +670,23 @@ AdminsTab:AddButton({
 AdminsTab:AddButton({
     Title = "Shutdown Server",
     Callback = function()
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/shutdown", "All")
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/shutdown", "All")
     end
 })
 
 AdminsTab:AddButton({
     Title = "Restart Server",
     Callback = function()
-        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/restart", "All")
+        game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/restart", "All")
     end
 })
 
 AdminsTab:AddButton({
     Title = "Set Player WalkSpeed",
     Callback = function()
-        Window:AddInput({
+        local speedInput = Window:CreateInput({
             Title = "WalkSpeed Value",
+            Default = "50",
             Placeholder = "Enter number e.g. 50",
             Callback = function(value)
                 local speed = tonumber(value)
@@ -701,8 +702,9 @@ AdminsTab:AddButton({
 AdminsTab:AddButton({
     Title = "Set Player JumpPower",
     Callback = function()
-        Window:AddInput({
+        local powerInput = Window:CreateInput({
             Title = "JumpPower Value",
+            Default = "100",
             Placeholder = "Enter number e.g. 100",
             Callback = function(value)
                 local power = tonumber(value)
@@ -718,11 +720,12 @@ AdminsTab:AddButton({
 AdminsTab:AddButton({
     Title = "Chat Announcement",
     Callback = function()
-        Window:AddInput({
+        local announcementInput = Window:CreateInput({
             Title = "Announcement Text",
+            Default = "",
             Placeholder = "Type message here",
             Callback = function(value)
-                game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/announce " .. value, "All")
+                game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/announce " .. value, "All")
             end
         })
     end
@@ -733,7 +736,7 @@ AdvancedTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/give " .. target.Name .. " tool", "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/give " .. target.Name .. " tool", "All")
         end
     end
 })
@@ -743,7 +746,7 @@ AdvancedTab:AddButton({
     Callback = function()
         local target = getPlayerByName(targetName)
         if target then
-            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/removetool " .. target.Name, "All")
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("/removetool " .. target.Name, "All")
         end
     end
 })
@@ -751,8 +754,9 @@ AdvancedTab:AddButton({
 AdvancedTab:AddButton({
     Title = "Set Gravity",
     Callback = function()
-        Window:AddInput({
+        local gravityInput = Window:CreateInput({
             Title = "Gravity Value",
+            Default = "196.2",
             Placeholder = "Enter gravity (default 196.2)",
             Callback = function(value)
                 local gravity = tonumber(value)
@@ -797,13 +801,14 @@ AdvancedTab:AddButton({
 AdvancedTab:AddButton({
     Title = "Set Time of Day",
     Callback = function()
-        Window:AddInput({
+        local timeInput = Window:CreateInput({
             Title = "Time (0-24)",
+            Default = "12",
             Placeholder = "Enter time value",
             Callback = function(value)
                 local time = tonumber(value)
                 if time and time >= 0 and time <= 24 then
-                    game.Lighting.TimeOfDay = tostring(time) .. ":00:00"
+                    game:GetService("Lighting").TimeOfDay = string.format("%02d:00:00", math.floor(time))
                 end
             end
         })
@@ -819,37 +824,68 @@ AdvancedTab:AddButton({
         local humanoid = character:FindFirstChildOfClass("Humanoid")
         if not humanoid then return end
 
+        for _, child in pairs(character.HumanoidRootPart:GetChildren()) do
+            if child:IsA("BodyVelocity") then
+                child:Destroy()
+            end
+        end
+
         local flying = true
         local bodyVelocity = Instance.new("BodyVelocity")
-        bodyVelocity.MaxForce = Vector3.new(1e5,1e5,1e5)
-        bodyVelocity.Velocity = Vector3.new(0,0,0)
+        bodyVelocity.Name = "FlyVelocity"
+        bodyVelocity.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
         bodyVelocity.Parent = character.HumanoidRootPart
 
         local UIS = game:GetService("UserInputService")
+        
+        if character:FindFirstChild("FlyInputBeganConnection") then
+            character.FlyInputBeganConnection:Disconnect()
+            character.FlyInputBeganConnection:Destroy()
+        end
+        
+        if character:FindFirstChild("FlyInputEndedConnection") then
+            character.FlyInputEndedConnection:Disconnect()
+            character.FlyInputEndedConnection:Destroy()
+        end
 
-        UIS.InputBegan:Connect(function(input)
+        -- إنشاء اتصالات جديدة وتخزينها
+        local inputBeganConn = UIS.InputBegan:Connect(function(input)
             if flying and input.UserInputType == Enum.UserInputType.Keyboard then
                 if input.KeyCode == Enum.KeyCode.W then
                     bodyVelocity.Velocity = character.HumanoidRootPart.CFrame.LookVector * 50
                 elseif input.KeyCode == Enum.KeyCode.S then
-                    bodyVelocity.Velocity = -character.HumanoidRootPart.CFrame.LookVector * 50
-                elseif input.KeyCode == Enum.KeyCode.A then
                     bodyVelocity.Velocity = -character.HumanoidRootPart.CFrame.RightVector * 50
                 elseif input.KeyCode == Enum.KeyCode.D then
                     bodyVelocity.Velocity = character.HumanoidRootPart.CFrame.RightVector * 50
                 elseif input.KeyCode == Enum.KeyCode.Space then
-                    bodyVelocity.Velocity = Vector3.new(0,50,0)
+                    bodyVelocity.Velocity = Vector3.new(0, 50, 0)
                 elseif input.KeyCode == Enum.KeyCode.LeftControl then
-                    bodyVelocity.Velocity = Vector3.new(0,-50,0)
+                    bodyVelocity.Velocity = Vector3.new(0, -50, 0)
                 end
             end
         end)
-
-        UIS.InputEnded:Connect(function(input)
+        
+        local inputEndedConn = UIS.InputEnded:Connect(function(input)
             if flying and input.UserInputType == Enum.UserInputType.Keyboard then
-                bodyVelocity.Velocity = Vector3.new(0,0,0)
+                if input.KeyCode == Enum.KeyCode.W or
+                   input.KeyCode == Enum.KeyCode.S or
+                   input.KeyCode == Enum.KeyCode.A or
+                   input.KeyCode == Enum.KeyCode.D or
+                   input.KeyCode == Enum.KeyCode.Space or
+                   input.KeyCode == Enum.KeyCode.LeftControl then
+                    bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+                end
             end
         end)
+        
+        local inputBeganInstance = Instance.new("ObjectValue")
+        inputBeganInstance.Name = "FlyInputBeganConnection"
+        inputBeganInstance.Parent = character
+        
+        local inputEndedInstance = Instance.new("ObjectValue")
+        inputEndedInstance.Name = "FlyInputEndedConnection"
+        inputEndedInstance.Parent = character
     end
 })
 
@@ -860,9 +896,17 @@ AdvancedTab:AddButton({
         local character = player.Character
         if character and character:FindFirstChild("HumanoidRootPart") then
             for _, child in pairs(character.HumanoidRootPart:GetChildren()) do
-                if child:IsA("BodyVelocity") then
+                if child:IsA("BodyVelocity") and child.Name == "FlyVelocity" then
                     child:Destroy()
                 end
+            end
+            
+            if character:FindFirstChild("FlyInputBeganConnection") then
+                character.FlyInputBeganConnection:Destroy()
+            end
+            
+            if character:FindFirstChild("FlyInputEndedConnection") then
+                character.FlyInputEndedConnection:Destroy()
             end
         end
     end
@@ -870,7 +914,6 @@ AdvancedTab:AddButton({
 
 ToolsTab:AddButton({
     Title = "Give Teleport Tool",
-    Icon = "rbxassetid://3926305904",
     Callback = function()
         local tool = createTeleportTool()
         giveToolToPlayer(tool)
@@ -879,7 +922,6 @@ ToolsTab:AddButton({
 
 ToolsTab:AddButton({
     Title = "Give Delete Tool",
-    Icon = "rbxassetid://3926307977",
     Callback = function()
         local tool = createDeleteTool()
         giveToolToPlayer(tool)
@@ -888,15 +930,13 @@ ToolsTab:AddButton({
 
 ToolsTab:AddButton({
     Title = "Give Shield",
-    Icon = "rbxassetid://13374250",
     Callback = function()
         createShield()
     end
 })
 
 ToolsTab:AddButton({
-    Title = "Give Punch Tool",
-    Icon = "rbxassetid://6286471343",
+    Title = "Give Punch Tool",  
     Callback = function()
         local tool = createPunchTool()
         giveToolToPlayer(tool)
@@ -905,9 +945,56 @@ ToolsTab:AddButton({
 
 ToolsTab:AddButton({
     Title = "Give Paint & Delete Gun",
-    Icon = "rbxassetid://5038135013",
     Callback = function()
         local tool = createPaintDeleteGun()
         giveToolToPlayer(tool)
     end
+})
+
+local SettingsTab = Window:AddTab({ Title = "Settings", Icon = "⚙️" })
+
+SettingsTab:AddButton({
+    Title = "Toggle UI",
+    Callback = function()
+        if Window.Enabled then
+            Window:Hide()
+        else
+            Window:Show()
+        end
+    end
+})
+
+SettingsTab:AddToggle("DarkModeToggle", {
+    Title = "Dark Mode",
+    Default = true,
+    Callback = function(value)
+        if value then
+            Window:SetTheme("Dark")
+        else
+            Window:SetTheme("Light")
+        end
+    end
+})
+
+SettingsTab:AddSlider("UITransparency", {
+    Title = "UI Transparency",
+    Default = 0,
+    Min = 0,
+    Max = 100,
+    Callback = function(value)
+        Window.Frame.BackgroundTransparency = value/100
+    end
+})
+
+SettingsTab:AddButton({
+    Title = "Exit Admin Panel",
+    Callback = function()
+        Window:Destroy()
+    end
+})
+
+Fluent:Notify({
+    Title = "Admin Panel Loaded",
+    Content = "Fast Admin panel has been loaded successfully!",
+    Duration = 5
 })
